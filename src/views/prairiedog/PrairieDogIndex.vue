@@ -1,54 +1,53 @@
 <template>
-<main class="container shadow bg-white pb-5">
-            <div class="jumbotron">
-                <h1>プレーリードッグ</h1>
-                <hr>
-                <h2>ルール</h2>
-                <ul>
-                  <li>前の人よりも「大きい数字」を宣言</li>
-                  <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
-                </ul>
-            </div>
+  <main class="container shadow bg-white pb-5">
+    <div class="jumbotron">
+      <h1>プレーリードッグ</h1>
+      <hr>
+      <h2>ルール</h2>
+      <ul>
+        <li>前の人よりも「大きい数字」を宣言</li>
+        <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
+      </ul>
+    </div>
 
-            <div class="row">
-                <div class="col-lg-4 mb-3">
-                    <div class="card mx-auto" style="width: 20rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Create a Room here</h5>
-                            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
-                            <div class="clearfix">
-                              <button @click="createRoom"
-                                id="create_room01" type="button" class="btn btn-sm btn-primary float-right" >
-                                Create a room
-                              </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div v-for="(room, index) in rooms" :key="room.id" class="col-lg-4 mb-3">
-                    <div class="card mx-auto" style="width: 20rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Room {{ index + 1 }}</h5>
-                            <div id="status_room01">
-                                <h6 v-if="room.status !== 'empty'" id="status_room01" class="card-subtitle mb-2 text-muted"> {{ room.status }}: {{ room.nplayers }} / 4 </h6>
-                                <div v-else id="status_room01" class="spinner-border text-primary mb-2" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-                            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
-                            <div class="clearfix">
-                              <button :disabled="room.nplayers == 0 ||  room.nplayers == 4"  @click="joinRoom(room.id, index)"
-                                id="join_room01" type="button" class="btn btn-sm btn-primary float-right">
-                                Join a room
-                              </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="row">
+      <div class="col-lg-4 mb-3">
+        <div class="card mx-auto" style="width: 20rem;">
+          <div class="card-body">
+            <h5 class="card-title">Create a Room here</h5>
+            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
+            <div class="clearfix">
+              <button @click="createRoom" :disabled="username.length == 0"
+                id="create_room01" type="button" class="btn btn-sm btn-primary float-right" >
+                Create a room
+              </button>
             </div>
-        </main>
+          </div>
+        </div>
+      </div>
+      <div v-for="(room, index) in rooms" :key="room.id" class="col-lg-4 mb-3">
+        <div class="card mx-auto" style="width: 20rem;">
+          <div class="card-body">
+            <h5 class="card-title">Room {{ index + 1 }}</h5>
+            <div id="status_room01">
+              <h6 v-if="room.status !== 'empty'" id="status_room01" class="card-subtitle mb-2 text-muted"> {{ room.status }}: {{ room.nplayers }} / 4 </h6>
+              <div v-else id="status_room01" class="spinner-border text-primary mb-2" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
+            <div class="clearfix">
+              <button :disabled="room.nplayers == 0 || room.nplayers == 4 || username.length == 0"  @click="joinRoom(room.id, index)"
+                id="join_room01" type="button" class="btn btn-sm btn-primary float-right">
+                Join a room
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
-
 
 <script>
 

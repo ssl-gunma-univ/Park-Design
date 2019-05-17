@@ -1,62 +1,55 @@
 <template>
-    <div id="app">
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-                <div class="container">
-                    <a class="navbar-brand" href="index.html"><i class="fas fa-dice mr-2"></i><img style="width: 290px; height: 30px" src="@/assets/logos/1.png"/></a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="index.html">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Games</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">About</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-        </nav>
+  <div id="app">
+    
+    <app-header></app-header>
+    <app-footer></app-footer>
 
-        <router-view/>
-    </div>
+  </div>
 </template>
+
+<script>
+import Header from "./components/Header.vue";
+import Footer from "@/components/Footer.vue";
+
+export default {
+  components:{
+    'app-header': Header,
+    'app-footer': Footer
+  }
+}
+</script>
 
 <style lang="scss">
 /* from layout.css */
 html {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 body {
-    font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
+  font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
 }
 
 main {
-    padding-top: 5rem;
+  padding-top: 5rem;
 }
 
 img {
-    width: 100%;
+  width: 100%;
 }
 
 .back {
-    padding: 1rem;
-    background-color: #87CEFA;
+  padding: 1rem;
+  background-color: #87CEFA;
 }
 
 .turn {
-    padding: 1rem;
-    background-color: #993333;
+  padding: 1rem;
+  background-color: #993333;
 }
 
 .mback {
-    padding: 1rem;
-    background-color: rgb(90, 101, 114);
+  padding: 1rem;
+  background-color: rgb(90, 101, 114);
 }
 
 </style>
