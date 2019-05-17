@@ -2,7 +2,7 @@
     <div id="app">
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
                 <div class="container">
-                    <a class="navbar-brand" href="index.html"><i class="fas fa-dice mr-2"></i>Petit Table Game Park</a>
+                    <a class="navbar-brand" href="index.html"><i class="fas fa-dice mr-2"></i><img style="width: 290px; height: 30px" src="@/assets/logos/1.png"/></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>

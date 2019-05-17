@@ -1,5 +1,8 @@
 <template>
-	<main class="container">
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-1 col-xl-2"></div>
+	  <main class="col-7">
             <div class="jumbotron">
                 <h1>プレーリードッグ</h1>
                 <hr>
@@ -89,7 +92,13 @@
                     <button @click="destroyRoom" id="remove" type="button" class="btn btn-danger w-50">部屋解散</button>
                 </div>
             </div>
+            
         </main>
+        <aside class="col-3" style="padding-top: 5rem;">
+          <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe>
+        </aside>
+  </div>
+  </div>
 </template>
 
 <script>

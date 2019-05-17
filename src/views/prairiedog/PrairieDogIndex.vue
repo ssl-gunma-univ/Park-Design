@@ -15,16 +15,13 @@
                     <div class="card mx-auto" style="width: 20rem;">
                         <div class="card-body">
                             <h5 class="card-title">Create a Room here</h5>
-                            <div id="status_room01">
-                                <div id="status_room01" class="spinner-border text-primary mb-2" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
                             <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
-                            <button @click="createRoom"
-                                id="create_room01" type="button" class="btn btn-sm btn-primary" >
+                            <div class="clearfix">
+                              <button @click="createRoom"
+                                id="create_room01" type="button" class="btn btn-sm btn-primary float-right" >
                                 Create a room
-                            </button>
+                              </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -39,14 +36,12 @@
                                 </div>
                             </div>
                             <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
-                            <button :disabled="room.status !== 'empty'" @click="createRoom"
-                                id="create_room01" type="button" class="btn btn-sm btn-primary" >
-                                Create a room
-                            </button>
-                            <button :disabled="room.nplayers == 0 ||  room.nplayers == 4"  @click="joinRoom(room.id, index)"
-                                id="join_room01" type="button" class="btn btn-sm btn-primary">
+                            <div class="clearfix">
+                              <button :disabled="room.nplayers == 0 ||  room.nplayers == 4"  @click="joinRoom(room.id, index)"
+                                id="join_room01" type="button" class="btn btn-sm btn-primary float-right">
                                 Join a room
-                            </button>
+                              </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +124,7 @@ export default {
         name: 'prairiedogplayroom',
         params: { 'roomId': roomId }
       })
-    }
+    },
 
   },
   created () {
