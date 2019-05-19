@@ -8,8 +8,10 @@
         <li>前の人よりも「大きい数字」を宣言</li>
         <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
       </ul>
+      <div class="clearfix">
+        <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
+      </div>
     </div>
-
     <div class="row">
       <div class="col-lg-4 mb-3">
         <div class="card mx-auto" style="width: 20rem;">
@@ -123,7 +125,7 @@ export default {
         name: 'prairiedogplayroom',
         params: { 'roomId': roomId }
       })
-    },
+    }
 
   },
   created () {

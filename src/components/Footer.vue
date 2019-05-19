@@ -5,7 +5,6 @@
       <p class="float-right"><a href="#">▲Back to top</a></p>
       <p>Copyright © 2019- SofSci研, Inc. All Rights Reserved.</p>
     </footer>
-
   </div>
 </template>
 

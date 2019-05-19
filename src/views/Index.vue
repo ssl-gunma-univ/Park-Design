@@ -15,9 +15,8 @@
             <div class="card-body">
               <h5 class="card-title font-weight-bold">プレーリードッグ</h5>
               <p class="card-text">
-                <strong>Prairie Dog</strong> is a simple bluffing game in a western setting. Every player gets a card 
-                showing a number of "hidden" Indians or a special value. You don't know the value of your card, but you can see all the 
-                others. 
+                <strong>Prairie Dog</strong> is a simple bluffing game in a western setting. Every player gets a card
+                 showing a number of "hidden" Indians or a special value. You don't know the value of your card, but you can see all the others.
               </p>
               <div class="clearfix">
                 <router-link to="/prairie-dog" class="btn btn-primary float-right">Play</router-link>
