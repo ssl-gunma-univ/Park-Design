@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <app-header></app-header>
+    <router-view/>
     <app-footer></app-footer>
   </div>
 </template>
@@ -28,7 +29,11 @@ body {
 }
 
 main {
-  padding-top: 5rem;
+  padding-top: 3rem;
+}
+
+aside {
+  padding-top: 3rem;
 }
 
 img {

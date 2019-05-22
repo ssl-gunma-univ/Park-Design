@@ -15,16 +15,16 @@ import 'firebase/firestore'
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
-var firebaseConfig = {
-  apiKey: 'AIzaSyASIWM4JPAoJJvW-x6q0EtGx-ByjGPp-Tk',
-  authDomain: 'game-parc.firebaseapp.com',
-  databaseURL: 'https://game-parc.firebaseio.com',
-  projectId: 'game-parc',
-  storageBucket: 'game-parc.appspot.com',
-  messagingSenderId: '148852793017',
-  appId: '1:148852793017:web:e1b16008f43182ea'
-}
-/*
+// var firebaseConfig = {
+//   apiKey: 'AIzaSyASIWM4JPAoJJvW-x6q0EtGx-ByjGPp-Tk',
+//   authDomain: 'game-parc.firebaseapp.com',
+//   databaseURL: 'https://game-parc.firebaseio.com',
+//   projectId: 'game-parc',
+//   storageBucket: 'game-parc.appspot.com',
+//   messagingSenderId: '148852793017',
+//   appId: '1:148852793017:web:e1b16008f43182ea'
+// }
+
 var firebaseConfig = {
 		apiKey: "AIzaSyAowpGLtG2tuzt95Xv51b6NwNPqNa5QFQQ",
 		authDomain: "vuex-test-a61dc.firebaseapp.com",
@@ -33,8 +33,8 @@ var firebaseConfig = {
 		storageBucket: "vuex-test-a61dc.appspot.com",
 		messagingSenderId: "370217216011",
 		appId: "1:370217216011:web:189319d56ffb29dd"
-      };
-*/
+};
+
 firebase.initializeApp(firebaseConfig)
 
 export const db = firebase.firestore()

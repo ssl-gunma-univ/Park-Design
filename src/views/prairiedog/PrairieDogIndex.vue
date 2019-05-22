@@ -48,6 +48,7 @@
         </div>
       </div>
     </div>
+    <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe>
   </main>
 </template>
 
@@ -86,7 +87,7 @@ export default {
 
       // initializing room
       const room = {
-        users: [ { username: this.username, role: 'host', score: 0 } ],
+        users: [ { username: this.username, role: 'host', damage: 0 } ],
         events: [
           // events have action and author properties
           // action can be an object
@@ -115,7 +116,7 @@ export default {
         const user = {
           username: this.username,
           role: 'guest',
-          score: 0
+          damage: 0
         }
         this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user, 'index': index })
       }

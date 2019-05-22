@@ -10,7 +10,7 @@
         つまり「相手の見えている数字」と「自分の見えない数字」があり、その合計の数を推理します。
       </p>
     </div>
-    <h3>手順</h3>
+    <h3 class="topic">手順</h3>
     <ol>
       <li>数字や記号の書かれたカードが山札からプレイヤーに配られる</li>
       <li>このとき，各々は自分のカードを見ることができない</li>
@@ -21,7 +21,7 @@
       <li>「プレーリードッグ」宣言をした場合，全員が各々のカードを見ることができ，前のプレイヤーの宣言した数字が場のカードの合計値より大きかったらそのプレイヤーにダメージを与え，小さかったら「プレーリードッグ」宣言をしたプレイヤーにダメージが与えられる</li>
       <li>ゲームは山札の枚数がプレイヤーの人数未満になったときに終了し，その時点で受けたダメージの少ないプレイヤーから順に強いということになる</li>
     </ol>
-    <h3>カードの種類</h3>
+    <h3 class="topic">カードの種類</h3>
     <p>　カードは14種類存在し，それぞれ枚数が決まっています．山札は合計で36枚になります．</p>
     <div class="row border-top border-bottom ml-5 mr-5 mb-4">
       <div class="col-lg-4 border-right border-left">
@@ -124,7 +124,7 @@
       <div class="col-3 border-right pt-2 pb-2">?</div>
       <div class="col-9 pt-2 pb-2">「プレーリードッグ」宣言後，山札から1枚引き，そのカードと置き換わる<br>山札が0枚の場合は0となる</div>
     </div>
-    <h3 class="mt-3">元ネタ</h3>
+    <h3 class="mt-3 topic">元ネタ</h3>
     <p class="pb-5">　プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームです．</p>
   </main>
 </template>
@@ -135,7 +135,7 @@ export default {
 </script>
 
 <style>
-h3 {
+.topic {
   color: #404040;
   border-left: solid 6px #1fa67a;
   border-bottom: solid 2px #dadada;
