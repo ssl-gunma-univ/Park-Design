@@ -9,7 +9,7 @@
       </p>
     </div>
     <div class="row">
-      <div class="col-lg-4 mb-3">
+      <div class="col-md-6 col-lg-4 mb-3">
           <div class="card mx-auto" style="width: 20rem;">
             <img src="https://pbs.twimg.com/media/C84aGQhUAAANlqj.jpg:large" class="card-img-top" alt="prairie">
             <div class="card-body">
@@ -24,7 +24,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4 mb-3">
+        <div class="col-md-6 col-lg-4 mb-3">
           <div class="card mx-auto" style="width: 20rem;">
             <img src="https://akiyosblog.com/wp-content/uploads/2016/01/DSC_9844.jpg" class="card-img-top" alt="...">
             <div class="card-body">
@@ -39,7 +39,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4 mb-3">
+        <div class="col-md-6 col-lg-4 mb-3">
           <div class="card mx-auto" style="width: 20rem;">
             <img src="https://images.unsplash.com/photo-1551537661-210e318af89e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="...">
             <div class="card-body">

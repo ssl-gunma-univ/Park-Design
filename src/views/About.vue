@@ -9,8 +9,11 @@
 
     <footer class="mastfoot mt-auto">
       <div class="inner">
-        <p>Contact us : ptittablegamepark@xxxxxxx.com<br>
-        This site uses <a href="https://getbootstrap.com/">Bootstrap</a>.</p>
+        <p>
+          Contact us : ptittablegamepark@xxxxxxx.com<br>
+          This site is used <a href="https://getbootstrap.com/">Bootstrap</a>.<br>
+          A powerful Photoshop-like CSS gradient editor from <a href="https://www.colorzilla.com/">ColorZilla</a>.
+        </p>
       </div>
     </footer>
   </div>

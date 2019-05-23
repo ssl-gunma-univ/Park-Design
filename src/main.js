@@ -26,14 +26,14 @@ Vue.config.productionTip = false
 // }
 
 var firebaseConfig = {
-		apiKey: "AIzaSyAowpGLtG2tuzt95Xv51b6NwNPqNa5QFQQ",
-		authDomain: "vuex-test-a61dc.firebaseapp.com",
-		databaseURL: "https://vuex-test-a61dc.firebaseio.com",
-		projectId: "vuex-test-a61dc",
-		storageBucket: "vuex-test-a61dc.appspot.com",
-		messagingSenderId: "370217216011",
-		appId: "1:370217216011:web:189319d56ffb29dd"
-};
+  apiKey: 'AIzaSyAowpGLtG2tuzt95Xv51b6NwNPqNa5QFQQ',
+  authDomain: 'vuex-test-a61dc.firebaseapp.com',
+  databaseURL: 'https://vuex-test-a61dc.firebaseio.com',
+  projectId: 'vuex-test-a61dc',
+  storageBucket: 'vuex-test-a61dc.appspot.com',
+  messagingSenderId: '370217216011',
+  appId: '1:370217216011:web:189319d56ffb29dd'
+}
 
 firebase.initializeApp(firebaseConfig)
 

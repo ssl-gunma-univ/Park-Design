@@ -4,10 +4,10 @@
       <h1>プレーリードッグのルール</h1>
       <hr>
       <h2>概要</h2>
-      <p>
-        「プレーリードッグ」は、ハッタリと推理が勝負のカギを握る、心理戦ボードゲームです。<br>
-        このゲームは『場に出ている数字の合計値を予想する』ゲームですが、その一番の特徴は『自分の数字だけ見えない』ということです。
-        つまり「相手の見えている数字」と「自分の見えない数字」があり、その合計の数を推理します。
+      <p style="text-indent: 1em;">
+        「プレーリードッグ」は，ハッタリと推理が勝負のカギを握る，心理戦ボードゲームです．
+        『場に出ている数字の合計値を予想する』ゲームですが，その一番の特徴は『自分の数字だけ見えない』ということです．
+        つまり「相手の見えている数字」と「自分の見えない数字」があり，その合計の数を推理します．
       </p>
     </div>
     <h3 class="topic">手順</h3>
@@ -22,7 +22,7 @@
       <li>ゲームは山札の枚数がプレイヤーの人数未満になったときに終了し，その時点で受けたダメージの少ないプレイヤーから順に強いということになる</li>
     </ol>
     <h3 class="topic">カードの種類</h3>
-    <p>　カードは14種類存在し，それぞれ枚数が決まっています．山札は合計で36枚になります．</p>
+    <p style="text-indent: 1em;">カードは14種類存在し，それぞれ枚数が決まっています．山札は合計で36枚になります．</p>
     <div class="row border-top border-bottom ml-5 mr-5 mb-4">
       <div class="col-lg-4 border-right border-left">
         <div class="d-flex justify-content-between align-items-center w-100">
@@ -111,7 +111,7 @@
       <div class="col-lg-4 border-right border-left">
       </div>
     </div>
-    <p>　これらのカードのうち，特殊な働きをするカードが3種類あります．「×2」「MAX → 0」「?」です．それぞれの効果は以下の通りです．</p>
+    <p style="text-indent: 1em;">これらのカードのうち，特殊な働きをするカードが3種類あります．「×2」「MAX → 0」「?」です．それぞれの効果は以下の通りです．</p>
     <div class="row border-top border-bottom ml-5 mr-5">
       <div class="col-3 border-right pt-2 pb-2">×2</div>
       <div class="col-9 pt-2 pb-2">場のカードの合計値を2倍する</div>
@@ -125,7 +125,7 @@
       <div class="col-9 pt-2 pb-2">「プレーリードッグ」宣言後，山札から1枚引き，そのカードと置き換わる<br>山札が0枚の場合は0となる</div>
     </div>
     <h3 class="mt-3 topic">元ネタ</h3>
-    <p class="pb-5">　プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームです．</p>
+    <p class="pb-5" style="text-indent: 1em;">プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームです．</p>
   </main>
 </template>
 

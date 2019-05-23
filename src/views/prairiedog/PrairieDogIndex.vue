@@ -12,6 +12,54 @@
         <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-lg-6 p-5">
+        <form class="form-signin card p-5">
+          <div class="text-center">
+            <h1 class="h3 mb-3 font-weight-normal">Create a Room here</h1>
+            <p>Enter Room ID and Username</p>
+          </div>
+
+          <div class="form-label-group">
+            <input type="text" class="form-control" placeholder="Room ID" required="" autofocus="">
+            <label>Room ID</label>
+          </div>
+
+          <div class="form-label-group">
+            <input v-model="username" type="text" class="form-control" placeholder="Username" required="">
+            <label>Username</label>
+          </div>
+
+          <button @click="createRoom" class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
+        </form>
+      </div>
+
+      <div class="col-sm-12 col-lg-6 p-5">
+        <form class="form-signin card p-5">
+          <div class="text-center">
+            <h1 class="h3 mb-3 font-weight-normal">Join a Room here</h1>
+            <p>Enter Room ID and Username</p>
+          </div>
+
+          <div class="form-label-group">
+            <input type="text" class="form-control" placeholder="Room ID" required="">
+            <label>Room ID</label>
+          </div>
+
+          <div class="form-label-group">
+            <input v-model="username" type="text" class="form-control" placeholder="Username" required="">
+            <label>Username</label>
+          </div>
+
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Join a Room</button>
+        </form>
+      </div>
+    </div>
+
+    <hr>
+    <h4 class="text-muted text-center mb-3">Things under the here are gonna delete when new "join a room" system is completed.</h4>
+
     <div class="row">
       <div class="col-lg-4 mb-3">
         <div class="card mx-auto" style="width: 20rem;">
@@ -37,7 +85,7 @@
                 <span class="sr-only">Loading...</span>
               </div>
             </div>
-            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
+            <input v-model="username" type="text" placeholder="Your Name" class="form-control mb-2">
             <div class="clearfix">
               <button :disabled="room.nplayers == 0 || room.nplayers == 4 || username.length == 0"  @click="joinRoom(room.id, index)"
                 id="join_room01" type="button" class="btn btn-sm btn-primary float-right">
@@ -48,13 +96,13 @@
         </div>
       </div>
     </div>
-    <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe>
+    <!-- <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe> -->
   </main>
 </template>
 
 <script>
 
-import { db } from '@/main'
+// import { db } from '@/main'
 import { mapState } from 'vuex'
 
 export default {
@@ -136,3 +184,71 @@ export default {
   }
 }
 </script>
+
+<style>
+.form-signin {
+  width: 100%;
+  max-width: 420px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.form-label-group > input,
+.form-label-group > label {
+  height: 3.125rem;
+  padding: .75rem;
+}
+
+.form-label-group > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin-bottom: 0; /* Override default `<label>` margin */
+  line-height: 1.5;
+  color: #495057;
+  pointer-events: none;
+  cursor: text; /* Match the input under the label */
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  transition: all .1s ease-in-out;
+}
+
+.form-label-group input::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input:-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-moz-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::placeholder {
+  color: transparent;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+  padding-top: 1.25rem;
+  padding-bottom: .25rem;
+}
+
+.form-label-group input:not(:placeholder-shown) ~ label {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  font-size: 12px;
+  color: #777;
+}
+</style>

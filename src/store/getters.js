@@ -14,7 +14,7 @@ export default {
     }
   },
 
-  currentTurnIdx(state) {
+  currentTurnIdx (state) {
     return state.room.currentTurnIdx
   },
 
@@ -22,8 +22,12 @@ export default {
     return state.room.lastCalledNumber
   },
 
-  playing(state) {
+  playing (state) {
     return state.room.playing
+  },
+
+  isPrairieDogCalled (state) {
+    return state.room.isPrairieDogCalled
   },
 
   gameOver(state) {
@@ -54,11 +58,15 @@ export default {
     }
   },
 
-  cardsLeft(state){
+  cardsLeft (state) {
     return state.room.cards
   },
 
-  previousCardsLeft(state) {
+  previousCardsLeft (state) {
     return state.room.previousCards
+  },
+
+  events (state) {
+    return state.room.events
   }
 }
