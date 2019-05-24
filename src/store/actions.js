@@ -167,7 +167,7 @@ export default {
       })
   },
 
-  call ({ commit, state }, attempt, username) {
+  call ({ commit, state }, { attempt, username }) {
     // set last called number from textbox in PrairieDogPlauRoom.vue
     state.room.lastCalledNumber = attempt
 

@@ -192,7 +192,7 @@ export default {
 
       console.log('called')
 
-      this.$store.dispatch('call', parseInt(this.attempt), this.room.users[this.myIndexInRoom].username)
+      this.$store.dispatch('call', { attempt: parseInt(this.attempt), username: this.room.users[this.myIndexInRoom].username})
 
       // reset the textbox after called
       this.attempt = ''
