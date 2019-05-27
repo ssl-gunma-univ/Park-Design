@@ -221,8 +221,8 @@ export default {
       previousCards: state.room.cards.slice()
     })
       .then(() => {
-        dispatch('drawCards', state.room.cards)
         dispatch('preprocessing')
+        dispatch('drawCards', state.room.cards)
       })
   },
 
