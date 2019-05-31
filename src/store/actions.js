@@ -221,8 +221,10 @@ export default {
       previousCards: state.room.cards.slice()
     })
       .then(() => {
-        dispatch('drawCards', state.room.cards)
-        dispatch('preprocessing')
+        state.isPrairieDogCalled = false
+        dispatch('preprocessing').then(() => {
+          dispatch('drawCards', state.room.cards)
+        })
       })
   },
 

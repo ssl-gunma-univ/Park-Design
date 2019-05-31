@@ -30,7 +30,7 @@ export default {
     return state.room.isPrairieDogCalled
   },
 
-  gameOver(state) {
+  gameOver (state) {
     return state.room.gameOver
   },
 

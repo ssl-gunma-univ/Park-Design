@@ -80,7 +80,8 @@
 
             <div class="col-lg-4 text-center back rounded shadow" id="playerDiv0">
               <h3>{{ me.username }}</h3>
-              <p v-if="isPrairieDogCalled" id="myCard">{{ getMyCard() }}</p>
+              <p v-if="!isPrairieDogCalled">My card</p>
+              <p v-else>{{ getMyCard() }}</p>
               <input v-model="attempt" type="number" :disabled="myIndexInRoom != currentTurnIdx">
               <input type="button" value="数字宣言" @click="call" :disabled="attempt.length == 0"><br>
               <button type="button" class="btn btn-warning mt-3" @click="callPrairieDog" :disabled="myIndexInRoom != currentTurnIdx || lastNum == undefined || isPrairieDogCalled">プレーリードッグ！</button>
@@ -192,7 +193,7 @@ export default {
 
       console.log('called')
 
-      this.$store.dispatch('call', { attempt: parseInt(this.attempt), username: this.room.users[this.myIndexInRoom].username})
+      this.$store.dispatch('call', { attempt: parseInt(this.attempt), username: this.room.users[this.myIndexInRoom].username })
 
       // reset the textbox after called
       this.attempt = ''
@@ -200,10 +201,7 @@ export default {
 
     callPrairieDog () {
       console.log('Prairie Dog!')
-
-      // set my current card to display my card under the displayed my username
-      this.me.currentCard = this.room.users[this.myIndexInRoom].currentCard
-
+      this.attempt = ''
       this.$store.dispatch('callPrairieDog', this.room.users[this.myIndexInRoom].username)
     },
 
@@ -255,12 +253,11 @@ export default {
 }
 
 .centerboard {
-/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b0d4e3+0,88bacf+100;Grey+3D+%233 */
-background: rgb(176,212,227); /* Old browsers */
-background: -moz-linear-gradient(top,  rgba(176,212,227,1) 0%, rgba(136,186,207,1) 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top,  rgba(176,212,227,1) 0%,rgba(136,186,207,1) 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom,  rgba(176,212,227,1) 0%,rgba(136,186,207,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b0d4e3', endColorstr='#88bacf',GradientType=0 ); /* IE6-9 */
-
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b0d4e3+0,88bacf+100;Grey+3D+%233 */
+  background: rgb(176,212,227); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(176,212,227,1) 0%, rgba(136,186,207,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(176,212,227,1) 0%,rgba(136,186,207,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(176,212,227,1) 0%,rgba(136,186,207,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b0d4e3', endColorstr='#88bacf',GradientType=0 ); /* IE6-9 */
 }
 </style>

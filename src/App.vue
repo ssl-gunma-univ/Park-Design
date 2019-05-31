@@ -29,11 +29,11 @@ body {
 }
 
 main {
-  padding-top: 3rem;
+  padding-top: 1rem;
 }
 
 aside {
-  padding-top: 3rem;
+  padding-top: 1rem;
 }
 
 img {
