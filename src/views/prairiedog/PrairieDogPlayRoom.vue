@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <aside class="col-lg-12 col-xl-2 border rouded shadow">
+      <aside class="col-lg-12 col-xl-2 border rouded shadow text-white" :style="{'background-image': 'url(' + require('@/assets/Images/wood-oil-bk.jpg') + ')'}">
         <h2>残りカード</h2>
         <hr>
         <div class="row">
@@ -16,40 +16,34 @@
       <main class="col-lg-9 col-xl-7">
         <div class="gameboard p-5 rounded shadow border">
           <div class="row mb-3">
-            <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow" id="playerDiv1">
+            <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow">
               <h3>waiting for other players</h3>
             </div>
 
             <div class="col-lg-4">
-              <div v-if="userleft"
-                class="m-1 text-center back rounded shadow" id="playerDiv1">
+              <div v-if="userleft" class="m-1 text-center rounded shadow"
+                v-bind:class="{ turn: userleft.username === getUsername(currentTurnIdx), back: !(userleft.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p1">{{ userleft.username }}</h3>
                 <p id="player1sCard">{{ userleft.currentCard }}</p>
-                <div id="damage_p1" class="mt-3">
-                  {{ userleft.score }}
-                </div>
+                <p class="mt-3">ダメージ：{{ userleft.damage }}</p>
               </div>
             </div>
 
             <div class="col-lg-4">
-              <div v-if="usertop"
-                class="m-1 text-center back rounded shadow" id="playerDiv2">
+              <div v-if="usertop" class="m-1 text-center rounded shadow"
+                v-bind:class="{ turn: usertop.username === getUsername(currentTurnIdx), back: !(usertop.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p2">{{ usertop.username }}</h3>
                 <p id="player2sCard">{{ usertop.currentCard }}</p>
-                <div id="damage_p2" class="mt-3">
-                  {{ usertop.score }}
-                </div>
+                <p class="mt-3">ダメージ：{{ usertop.damage }}</p>
               </div>
             </div>
 
             <div class="col-lg-4">
-              <div v-if="userright"
-                class="m-1 text-center back rounded shadow" id="playerDiv3">
+              <div v-if="userright" class="m-1 text-center rounded shadow"
+                v-bind:class="{ turn: userright.username === getUsername(currentTurnIdx), back: !(userright.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p3">{{ userright.username }}</h3>
                 <p id="player3sCard">{{ userright.currentCard }}</p>
-                <div id="damage_p3" class="mt-3">
-                  {{ userright.score }}
-                </div>
+                <p class="mt-3">ダメージ：{{ userright.damage }}</p>
               </div>
             </div>
           </div>
@@ -78,16 +72,12 @@
             <div class="col-lg-4">
             </div>
 
-            <div class="col-lg-4 text-center back rounded shadow" id="playerDiv0">
+            <div class="col-lg-4 text-center rounded shadow"
+              v-bind:class="{ turn: me.username === getUsername(currentTurnIdx), back: ! (me.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
               <h3>{{ me.username }}</h3>
-              <p v-if="!isPrairieDogCalled">My card</p>
-              <p v-else>{{ getMyCard() }}</p>
-              <input v-model="attempt" type="number" :disabled="myIndexInRoom != currentTurnIdx">
-              <input type="button" value="数字宣言" @click="call" :disabled="attempt.length == 0"><br>
-              <button type="button" class="btn btn-warning mt-3" @click="callPrairieDog" :disabled="myIndexInRoom != currentTurnIdx || lastNum == undefined || isPrairieDogCalled">プレーリードッグ！</button>
-              <div class="mt-3">
-                {{ me.score }}
-              </div>
+              <p v-if="!isPrairieDogCalled && playing">My card</p>
+              <p v-if="isPrairieDogCalled">{{ getMyCard() }}</p>
+              <p class="mt-3">ダメージ：{{ getMyDamage() }}</p>
             </div>
 
             <div v-if="me.role == 'host'"
@@ -99,41 +89,32 @@
             </div>
           </div>
         </div>
-        <hr>
-        <div class="jumbotron">
-          <h1>プレーリードッグ</h1>
-          <hr>
-          <h2>ルール</h2>
-          <ul>
-            <li>前の人よりも「大きい数字」を宣言</li>
-            <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
-          </ul>
-          <div class="clearfix">
-            <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
-          </div>
-        </div>
       </main>
 
       <aside class="col-lg-3">
-        <div class="card text-white text-center bg-dark mb-3">
-          <div class="card-body" style="height: 8rem;">
-            <h3 v-if="playing" class="card-title">{{ getUsername(currentTurnIdx) }}</h3>
-            <h4 v-if="playing" class="card-text">のターン</h4>
-            <h3 v-if="gameOver" class="card-title">ゲームセット</h3>
-            <h4 v-if="gameOver" class="card-text">勝者：{{  }}</h4>
-          </div>
-        </div>
         <div class="card">
           <div class="card-header">
             <b style="font-size: 21px;">Game Logs</b>
           </div>
-          <div class="card-body" style="height: 30rem; overflow:auto; position: relative;">
+          <div class="card-body" style="height: 30rem; overflow: auto; position: relative;">
             <span style="position: absolute; bottom: 0;">
               <p v-for="(event, index) in events" :key="index">
                 <a v-if="event.author != undefined"><b>{{ event.author }}</b> : {{ event.action }}</a>
                 <span v-else class="text-info"><b>SYSTEM</b> : {{ event.action }}</span>
               </p>
             </span>
+          </div>
+          <div class="card-footer bg-dark text-white">
+            <form class="form-inline">
+              <div class="form-group">
+                <input v-model="attempt" type="number" class="form-control mr-2" :disabled="myIndexInRoom != currentTurnIdx || isPrairieDogCalled">
+                <input type="button" value="数字宣言" class="btn btn-primary" @click="call" :disabled="attempt.length == 0">
+              </div>
+            </form>
+            <div class="d-flex flex-row-reverse">
+              <button type="button" class="btn btn-warning mt-3" @click="callPrairieDog"
+                :disabled="myIndexInRoom != currentTurnIdx || lastNum == undefined || isPrairieDogCalled">プレーリードッグ！</button>
+            </div>
           </div>
         </div>
       </aside>
@@ -185,13 +166,20 @@ export default {
       }
     },
 
+    getMyDamage () {
+      if (this.room.users[this.myIndexInRoom].damage !== undefined) {
+        return this.room.users[this.myIndexInRoom].damage
+      }
+    },
+
     call () {
       if (parseInt(this.attempt) <= parseInt(this.lastNum)) {
-        console.log('the number is upper than last called number')
+        const jsFrame = new JSFrame();
+        jsFrame.showToast({
+            html: 'The number is upper than last called number.', duration: 2000
+        });
         return
       }
-
-      console.log('called')
 
       this.$store.dispatch('call', { attempt: parseInt(this.attempt), username: this.room.users[this.myIndexInRoom].username })
 
@@ -200,32 +188,26 @@ export default {
     },
 
     callPrairieDog () {
-      console.log('Prairie Dog!')
       this.attempt = ''
       this.$store.dispatch('callPrairieDog', this.room.users[this.myIndexInRoom].username)
     },
 
-    gameStart () {
-      console.log('gameStart')
-
+    async gameStart () {
       // initial distribution of cards to users
-      this.$store.dispatch('drawCards', this.cardsLeft)
-
-      // decide who is first turn
-      this.$store.dispatch('preprocessing')
-
-      // It is the `host` turn to play
-      // this.$store.dispatch('nextUserPlay')
+      // this.$store.dispatch('resetCards').then(() => {
+      //   this.$store.dispatch('drawCards', this.cardsLeft).then(() => {
+      //     this.$store.dispatch('preprocessing')
+      //   })
+      // })
+      await this.$store.dispatch('resetCards')
+      this.$store.dispatch('preprocessing', this.cardsLeft)
     },
 
     destroyRoom () {
-      console.log('destroyRoom')
-
       this.$store.dispatch('destroyRoom')
     },
 
     nextRound () {
-      console.log('nextRound')
       this.$store.dispatch('nextRound')
     },
 

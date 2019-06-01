@@ -61,7 +61,7 @@ export default {
       // see firestore doc for details
       users: firebase.firestore.FieldValue.arrayUnion(payload.user),
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'user_joined',
+        action: 'joined!',
         author: payload.user.username
       })
     })
@@ -89,17 +89,22 @@ export default {
       }
     })
 
-    db.collection('rooms').doc(state.room.id).update(
-      {
-        cards: cards,
-        previousCards: cards,
-        events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'new_game'
-        })
-      }
-    )
-      .then(() => console.log('cards successfuly reset'))
-      .catch((err) => console.error(err))
+    let users = state.room.users.slice()
+    for (let user of users) {
+      user.damage = 0
+    }
+
+
+    db.collection('rooms').doc(state.room.id).update({
+      users: users,
+      cards: cards,
+      previousCards: cards,
+      events: firebase.firestore.FieldValue.arrayUnion({
+        action: 'new game'
+      })
+    })
+    .then(() => console.log('cards successfuly reset'))
+    .catch((err) => console.error(err))
   },
 
   drawCards ({ commit, state }, cards) {
@@ -145,14 +150,15 @@ export default {
       cards: cards,
       remaining: remaining,
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'new_round'
+        action: 'new round',
+        timestamp: Date.now()
       })
     })
       // NOTE: state is updated when db is updated
       .then(() => console.log('users have drawn cards'))
   },
 
-  preprocessing ({ commit, state }) {
+  preprocessing({ commit, dispatch, state }, cards) {
     // decide who is first turn
     db.collection('rooms').doc(state.room.id).update({
       currentTurnIdx: Math.floor(Math.random() * state.room.users.length),
@@ -163,7 +169,7 @@ export default {
     })
       // NOTE: state is updated when db is updated
       .then(() => {
-        console.log('preprocessing')
+        dispatch('drawCards', cards)
       })
   },
 
@@ -184,33 +190,181 @@ export default {
       currentTurnIdx: currentTurnIdx,
       lastCalledNumber: state.room.lastCalledNumber,
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'called_number',
+        action: 'called ' + state.room.lastCalledNumber,
         author: username,
         timestamp: Date.now()
       })
     })
   },
 
-  callPrairieDog ({ commit, state }, username) {
+  callPrairieDog({ commit, state }, username) {
+    
+    var multiplier = 0
+    var max = -1000000
+    var total = 0
+
+    for (var i = 0; i < state.room.users.length; i++) {
+      if (state.room.users[i].currentCard === '?') {
+        var randomDraw = () => {
+          let cardDrawn = false
+          while (!cardDrawn) {
+            const cardTypeIdx = Math.floor(Math.random() * state.room.cards.length)
+            if (state.room.cards[cardTypeIdx].cardsLeft) {
+              cardDrawn = state.room.cards[cardTypeIdx].type
+              state.room.cards[cardTypeIdx].cardsLeft -= 1
+            } else {
+              // no cards of this type, remove from consideration
+              state.room.cards.splice(cardTypeIdx, 1)
+            }
+          }
+          return cardDrawn
+        }
+
+        state.room.users[i].currentCard = randomDraw()
+
+        // update db
+        db.collection('rooms').doc(state.room.id).update({
+          users: state.room.users,
+          cards: state.room.cards,
+          remaining: state.room.remaining - 1,
+          events: firebase.firestore.FieldValue.arrayUnion({
+            action: '[?] → [' + state.room.users[i].currentCard + ']',
+            timestamp: Date.now()
+          })
+        })
+      }
+    }
+
+    for (var i = 0; i < state.room.users.length; i++) {
+      var card = state.room.users[i].currentCard
+
+      /* カードの種類別に集計 */
+      if (state.cardsType.indexOf(card) < 11) {
+        total += parseInt(card)
+      } else if (card === '×2') {
+        multiplier === 0 ? multiplier += 2 : multiplier *= 2
+      } else if (card === 'MAX → 0') {
+        for (var j = 0; j < state.room.users.length; j++) {
+          var card = parseInt(state.room.users[j].currentCard)
+          if (card > max) {
+            max = card
+          }
+        }
+      }
+    }
+
+    /* 'MAX → 0'があった場合にTOTALからMAXを引く */
+    if (max === -1000000) {
+      max = 0
+    }
+    total -= max
+
+    /* '×2'の分乗算する */
+    if (multiplier != 0) {
+      total *= multiplier
+    }
+
+    /* damage */
+    let turnIdx = state.room.currentTurnIdx
+    if (state.room.lastCalledNumber > total) {
+      if (turnIdx === 0) {
+        turnIdx = state.room.users.length
+      }
+      turnIdx--
+    }
+    state.room.users[turnIdx].damage++
+
     if (state.room.remaining > state.room.users.length) {
+      
+
       db.collection('rooms').doc(state.room.id).update({
+        users: state.room.users,
         isPrairieDogCalled: true,
         events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'called_prairie_dog',
+          action: 'Prairie Dog!',
           author: username,
           timestamp: Date.now()
         })
       })
     } else {
+      var firstPlace = []
+      var secondPlace = []
+      var thirdPlace = []
+      var fourthPlace = []
+      var damages = state.room.users.map(user => user.damage)
+      damages.sort((a, b) => { return a - b })
+      damages = damages.filter((x, i, self) => self.indexOf(x) === i);
+
+      console.log(damages)
+
+      for (var i = 0; i < state.room.users.length; i++) {
+        if (state.room.users[i].damage === damages[0]) {
+          firstPlace.push(state.room.users[i].username)
+        }
+      }
+      for (var i = 0; i < state.room.users.length; i++) {
+        if (damages.length >= 2 && state.room.users[i].damage === damages[1]) {
+          secondPlace.push(state.room.users[i].username)
+        }
+      }
+      for (var i = 0; i < state.room.users.length; i++) {
+        if (damages.length >= 3 && state.room.users[i].damage === damages[2]) {
+          thirdPlace.push(state.room.users[i].username)
+        }
+      }
+      for (var i = 0; i < state.room.users.length; i++) {
+        if (damages.length >= 4 && state.room.users[i].damage === damages[3]) {
+          fourthPlace.push(state.room.users[i].username)
+        }
+      }
+
       db.collection('rooms').doc(state.room.id).update({
+        users: state.room.users,
         playing: false,
         isPrairieDogCalled: true,
         gameOver: true,
         previousCards: state.room.cards.slice(),
         events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'called_prairie_dog',
+          action: 'Prairie Dog!',
           author: username,
           timestamp: Date.now()
+        },
+        {
+          action: 'Game over!',
+          timestamp: Date.now()
+        })
+      }).then(() => {
+        firstPlace.forEach(user => {
+          db.collection('rooms').doc(state.room.id).update({
+            events: firebase.firestore.FieldValue.arrayUnion({
+              action: '1st place : ' + user,
+              timestamp: Date.now()
+            })
+          })
+        })
+        secondPlace.forEach(user => {
+          db.collection('rooms').doc(state.room.id).update({
+            events: firebase.firestore.FieldValue.arrayUnion({
+              action: '2nd place : ' + user,
+              timestamp: Date.now()
+            })
+          })
+        })
+        thirdPlace.forEach(user => {
+          db.collection('rooms').doc(state.room.id).update({
+            events: firebase.firestore.FieldValue.arrayUnion({
+              action: '3rd place : ' + user,
+              timestamp: Date.now()
+            })
+          })
+        })
+        fourthPlace.forEach(user => {
+          db.collection('rooms').doc(state.room.id).update({
+            events: firebase.firestore.FieldValue.arrayUnion({
+              action: '4th place : ' + user,
+              timestamp: Date.now()
+            })
+          })
         })
       })
     }
@@ -222,15 +376,12 @@ export default {
     })
       .then(() => {
         state.isPrairieDogCalled = false
-        dispatch('preprocessing').then(() => {
-          dispatch('drawCards', state.room.cards)
-        })
+        dispatch('preprocessing', state.room.cards)
       })
   },
 
   destroyRoom ({ commit, state }) {
     db.collection('rooms').doc(state.room.id).delete().then(() => {
-      console.log('room has deleted')
       history.back(-1)
     })
       .catch((err) => {

@@ -140,7 +140,7 @@ export default {
           // events have action and author properties
           // action can be an object
           {
-            action: 'room_created',
+            action: 'room created',
             author: this.username
           }
         ]

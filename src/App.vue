@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header v-if="! isPlayRoom"></app-header>
     <router-view/>
     <app-footer></app-footer>
   </div>
@@ -14,6 +14,11 @@ export default {
   components: {
     'app-header': Header,
     'app-footer': Footer
+  },
+  computed: {
+    isPlayRoom () {
+      return location.pathname.match(/^\/playroom/)
+    }
   }
 }
 </script>
@@ -52,7 +57,12 @@ img {
 
 .turn {
   padding: 1rem;
-  background-color: #993333;
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f3c5bd+0,e86c57+50,ea2803+51,ff6600+75,c72200+100;Red+Gloss */
+  background: rgb(243,197,189); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(243,197,189,1) 0%, rgba(232,108,87,1) 50%, rgba(234,40,3,1) 51%, rgba(255,102,0,1) 75%, rgba(199,34,0,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(243,197,189,1) 0%,rgba(232,108,87,1) 50%,rgba(234,40,3,1) 51%,rgba(255,102,0,1) 75%,rgba(199,34,0,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(243,197,189,1) 0%,rgba(232,108,87,1) 50%,rgba(234,40,3,1) 51%,rgba(255,102,0,1) 75%,rgba(199,34,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3c5bd', endColorstr='#c72200',GradientType=0 ); /* IE6-9 */
 }
 
 .mback {
