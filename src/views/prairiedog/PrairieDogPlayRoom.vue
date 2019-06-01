@@ -18,6 +18,7 @@
           <div class="row mb-3">
             <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow" id="playerDiv1">
               <h3>waiting for other players</h3>
+                Your room number is {{ room.id }}
             </div>
 
             <div class="col-lg-4">
@@ -215,9 +216,6 @@ export default {
 
       // decide who is first turn
       this.$store.dispatch('preprocessing')
-
-      // It is the `host` turn to play
-      // this.$store.dispatch('nextUserPlay')
     },
 
     destroyRoom () {
@@ -238,6 +236,7 @@ export default {
   },
 
   created () {
+    //TODO: check if roomId is in localstorage here
     this.$store.dispatch('watchRoom', this.$route.params.roomId)
   }
 

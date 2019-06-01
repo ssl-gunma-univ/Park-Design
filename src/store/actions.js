@@ -13,8 +13,10 @@ export default {
         cardsLeft: state.initialCardNumbers[typeIdx]
       }
     })
+
     room.cards = cards
     room.previousCards = cards
+
     db.collection('rooms').add(room)
       .then(docRef => {
         /* saving the id of the room on firestore */
@@ -29,32 +31,8 @@ export default {
         // that is why he is indexed by 0
         commit('userLogedIn', room.users[0])
       })
-      .catch((err) => { console.error(err) })
   },
 
-  fetchRooms ({ commit }) {
-    db.collection('rooms').onSnapshot(querySnapshot => {
-      let allRooms = []
-      querySnapshot.forEach(doc => {
-        let room = doc.data()
-        room.id = doc.id // for local use
-        // TODO: move this to a getter
-        room.nplayers = room.users.length
-
-        if (room.nplayers === 0) {
-          room.status = 'empty'
-        } else if (room.nplayers < 4) {
-          room.status = 'hosted'
-        } else {
-          room.status = 'full'
-        }
-
-        allRooms.push(room)
-      })
-      // commit all rooms to initial state
-      commit('setAllRooms', allRooms)
-    })
-  },
 
   addUserToRoom ({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
