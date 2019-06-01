@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <app-header v-if="! isPlayRoom"></app-header>
+    <app-header></app-header>
     <router-view/>
     <app-footer></app-footer>
   </div>
@@ -14,11 +14,6 @@ export default {
   components: {
     'app-header': Header,
     'app-footer': Footer
-  },
-  computed: {
-    isPlayRoom () {
-      return location.pathname.match(/^\/playroom/)
-    }
   }
 }
 </script>

@@ -1,30 +1,38 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <aside class="col-lg-12 col-xl-2 border rouded shadow text-white" :style="{'background-image': 'url(' + require('@/assets/Images/wood-oil-bk.jpg') + ')'}">
-        <h2>残りカード</h2>
-        <hr>
+      <aside class="col-lg-12 col-xl-2 rouded shadow text-white" :style="{'background-image': 'url(' + require('@/assets/Images/wood-oil-bk.jpg') + ')', 'height': '90vh', 'overflow': 'auto'}">
+        <h3>残りカード</h3>
+        <hr class="border border-white">
         <div class="row">
-          <div v-for="index in 14" :key="index" class="col-lg-6 col-xl-12">
-            <div v-if="previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0" class="clearfix">
-              <p class="float-left">[{{ previousCardsLeft[index - 1].type }}]</p>
-              <p class="float-right">×{{ previousCardsLeft[index - 1].cardsLeft }}</p>
+          <div v-for="index in 14" :key="index" class="col-6 col-md-4 col-lg-3 col-xl-12">
+            <div v-if="previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0" class="row">
+              <div class="col-9">
+                <img v-if="previousCardsLeft[index - 1].type === '?'" class="w-100 img-thumbnail shadow" src="@/assets/PrairieDogCards/？.jpg"/>
+                <img v-else class="w-100 img-thumbnail shadow" v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"/>
+              </div>
+              <div class="my-auto col-3 d-flex justify-content-end">×{{ previousCardsLeft[index - 1].cardsLeft }}</div>
             </div>
           </div>
         </div>
       </aside>
+
       <main class="col-lg-9 col-xl-7">
         <div class="gameboard p-5 rounded shadow border">
           <div class="row mb-3">
             <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow">
               <h3>waiting for other players</h3>
+              <p>Your room ID is {{ room.id }}</p>
             </div>
 
             <div class="col-lg-4">
               <div v-if="userleft" class="m-1 text-center rounded shadow"
                 v-bind:class="{ turn: userleft.username === getUsername(currentTurnIdx), back: !(userleft.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p1">{{ userleft.username }}</h3>
-                <p id="player1sCard">{{ userleft.currentCard }}</p>
+                <p v-if="playing || gameOver">
+                  <img v-if="userleft.currentCard === '?'" class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/？.jpg"/>
+                  <img v-else class="w-75 img-thumbnail shadow" v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.jpg')"/>
+                </p>
                 <p class="mt-3">ダメージ：{{ userleft.damage }}</p>
               </div>
             </div>
@@ -33,7 +41,10 @@
               <div v-if="usertop" class="m-1 text-center rounded shadow"
                 v-bind:class="{ turn: usertop.username === getUsername(currentTurnIdx), back: !(usertop.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p2">{{ usertop.username }}</h3>
-                <p id="player2sCard">{{ usertop.currentCard }}</p>
+                <p v-if="playing || gameOver">
+                  <img v-if="usertop.currentCard === '?'" class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/？.jpg"/>
+                  <img v-else class="w-75 img-thumbnail shadow" v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.jpg')"/>
+                </p>
                 <p class="mt-3">ダメージ：{{ usertop.damage }}</p>
               </div>
             </div>
@@ -42,7 +53,10 @@
               <div v-if="userright" class="m-1 text-center rounded shadow"
                 v-bind:class="{ turn: userright.username === getUsername(currentTurnIdx), back: !(userright.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
                 <h3 id="name_p3">{{ userright.username }}</h3>
-                <p id="player3sCard">{{ userright.currentCard }}</p>
+                <p v-if="playing || gameOver">
+                  <img v-if="userright.currentCard === '?'" class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/？.jpg"/>
+                  <img v-else class="w-75 img-thumbnail shadow" v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.jpg')"/>
+                </p>
                 <p class="mt-3">ダメージ：{{ userright.damage }}</p>
               </div>
             </div>
@@ -75,8 +89,11 @@
             <div class="col-lg-4 text-center rounded shadow"
               v-bind:class="{ turn: me.username === getUsername(currentTurnIdx), back: ! (me.username === getUsername(currentTurnIdx)), 'py-5': ! playing }">
               <h3>{{ me.username }}</h3>
-              <p v-if="!isPrairieDogCalled && playing">My card</p>
-              <p v-if="isPrairieDogCalled">{{ getMyCard() }}</p>
+              <p v-if="!isPrairieDogCalled && playing"><img class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/card.jpg"/></p>
+              <p v-if="isPrairieDogCalled">
+                <img v-if="getMyCard() === '?'" class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/？.jpg"/>
+                <img v-else class="w-75 img-thumbnail shadow" v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.jpg')"/>
+              </p>
               <p class="mt-3">ダメージ：{{ getMyDamage() }}</p>
             </div>
 
@@ -91,25 +108,24 @@
         </div>
       </main>
 
-      <aside class="col-lg-3">
-        <div class="card">
+      <aside class="col-lg-3 d-flex" style="height: 90vh;">
+        <div class="card w-100">
           <div class="card-header">
-            <b style="font-size: 21px;">Game Logs</b>
+            <b style="font-size: 20px;">Game Logs</b>
           </div>
           <div class="card-body" style="height: 30rem; overflow: auto; position: relative;">
-            <span style="position: absolute; bottom: 0;">
-              <p v-for="(event, index) in events" :key="index">
-                <a v-if="event.author != undefined"><b>{{ event.author }}</b> : {{ event.action }}</a>
-                <span v-else class="text-info"><b>SYSTEM</b> : {{ event.action }}</span>
+            <span class="d-flex-fill" style="position: absolute; bottom: 0;">
+              <p v-for="(event, index) in events" :key="index" class="mb-2">
+                <span v-if="event.author == undefined" class="text-info"><b>SYSTEM</b> : {{ event.action }}</span>
+                <span v-else-if="event.author === 'SYSTEM_TOTAL'" class="text-primary"><b>TOTAL</b> : {{ event.action }}</span>
+                <span v-else><b>{{ event.author }}</b> : {{ event.action }}</span>
               </p>
             </span>
           </div>
           <div class="card-footer bg-dark text-white">
             <form class="form-inline">
-              <div class="form-group">
-                <input v-model="attempt" type="number" class="form-control mr-2" :disabled="myIndexInRoom != currentTurnIdx || isPrairieDogCalled">
-                <input type="button" value="数字宣言" class="btn btn-primary" @click="call" :disabled="attempt.length == 0">
-              </div>
+              <input v-model="attempt" type="number" class="form-control mr-2" :disabled="myIndexInRoom != currentTurnIdx || isPrairieDogCalled">
+              <input type="submit" value="数字宣言" class="btn btn-primary" @click="call" :disabled="attempt.length == 0">
             </form>
             <div class="d-flex flex-row-reverse">
               <button type="button" class="btn btn-warning mt-3" @click="callPrairieDog"
@@ -218,6 +234,7 @@ export default {
   },
 
   created () {
+    //TODO: check if roomId is in localstorage here
     this.$store.dispatch('watchRoom', this.$route.params.roomId)
   }
 

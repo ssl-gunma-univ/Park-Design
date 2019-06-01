@@ -13,8 +13,10 @@ export default {
         cardsLeft: state.initialCardNumbers[typeIdx]
       }
     })
+
     room.cards = cards
     room.previousCards = cards
+
     db.collection('rooms').add(room)
       .then(docRef => {
         /* saving the id of the room on firestore */
@@ -29,32 +31,8 @@ export default {
         // that is why he is indexed by 0
         commit('userLogedIn', room.users[0])
       })
-      .catch((err) => { console.error(err) })
   },
 
-  fetchRooms ({ commit }) {
-    db.collection('rooms').onSnapshot(querySnapshot => {
-      let allRooms = []
-      querySnapshot.forEach(doc => {
-        let room = doc.data()
-        room.id = doc.id // for local use
-        // TODO: move this to a getter
-        room.nplayers = room.users.length
-
-        if (room.nplayers === 0) {
-          room.status = 'empty'
-        } else if (room.nplayers < 4) {
-          room.status = 'hosted'
-        } else {
-          room.status = 'full'
-        }
-
-        allRooms.push(room)
-      })
-      // commit all rooms to initial state
-      commit('setAllRooms', allRooms)
-    })
-  },
 
   addUserToRoom ({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
@@ -100,7 +78,7 @@ export default {
       cards: cards,
       previousCards: cards,
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'new game'
+        action: 'GAME START!'
       })
     })
     .then(() => console.log('cards successfuly reset'))
@@ -150,7 +128,7 @@ export default {
       cards: cards,
       remaining: remaining,
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'new round',
+        action: 'NEW ROUND',
         timestamp: Date.now()
       })
     })
@@ -267,24 +245,50 @@ export default {
     /* damage */
     let turnIdx = state.room.currentTurnIdx
     if (state.room.lastCalledNumber > total) {
-      if (turnIdx === 0) {
-        turnIdx = state.room.users.length
-      }
-      turnIdx--
-    }
-    state.room.users[turnIdx].damage++
-
-    if (state.room.remaining > state.room.users.length) {
-      
-
       db.collection('rooms').doc(state.room.id).update({
-        users: state.room.users,
-        isPrairieDogCalled: true,
         events: firebase.firestore.FieldValue.arrayUnion({
           action: 'Prairie Dog!',
           author: username,
           timestamp: Date.now()
+        },
+        {
+          action: total + ' < ' + state.room.lastCalledNumber,
+          author: 'SYSTEM_TOTAL',
+          timestamp: Date.now()
+        },
+        {
+          action: 'Prairie Dog is SUCCEED!',
+          timestamp: Date.now()
         })
+      })
+      if (turnIdx === 0) {
+        turnIdx = state.room.users.length
+      }
+      turnIdx--
+    } else {
+      db.collection('rooms').doc(state.room.id).update({
+        events: firebase.firestore.FieldValue.arrayUnion({
+          action: 'Prairie Dog!',
+          author: username,
+          timestamp: Date.now()
+        },
+          {
+          action: total + ' > ' + state.room.lastCalledNumber,
+          author: 'SYSTEM_TOTAL',
+          timestamp: Date.now()
+        },
+        {
+          action: 'Prairie Dog is FAILED!',
+          timestamp: Date.now()
+        })
+      })
+    }
+    state.room.users[turnIdx].damage++
+
+    if (state.room.remaining > state.room.users.length) {
+      db.collection('rooms').doc(state.room.id).update({
+        users: state.room.users,
+        isPrairieDogCalled: true,
       })
     } else {
       var firstPlace = []
@@ -294,8 +298,6 @@ export default {
       var damages = state.room.users.map(user => user.damage)
       damages.sort((a, b) => { return a - b })
       damages = damages.filter((x, i, self) => self.indexOf(x) === i);
-
-      console.log(damages)
 
       for (var i = 0; i < state.room.users.length; i++) {
         if (state.room.users[i].damage === damages[0]) {
@@ -325,12 +327,7 @@ export default {
         gameOver: true,
         previousCards: state.room.cards.slice(),
         events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'Prairie Dog!',
-          author: username,
-          timestamp: Date.now()
-        },
-        {
-          action: 'Game over!',
+          action: 'GAME OVER!',
           timestamp: Date.now()
         })
       }).then(() => {
