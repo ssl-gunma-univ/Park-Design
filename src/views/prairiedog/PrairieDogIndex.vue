@@ -18,20 +18,15 @@
         <form class="form-signin card p-5">
           <div class="text-center">
             <h1 class="h3 mb-3 font-weight-normal">Create a Room here</h1>
-            <p>Enter Room ID and Username</p>
           </div>
 
           <div class="form-label-group">
-            <input type="text" class="form-control" placeholder="Room ID" required="" autofocus="">
-            <label>Room ID</label>
-          </div>
-
-          <div class="form-label-group">
-            <input v-model="username" type="text" class="form-control" placeholder="Username" required="">
+            <input v-model="creator_name" type="text" class="form-control" placeholder="Username" required="">
             <label>Username</label>
           </div>
 
-          <button @click="createRoom" class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
+          <button :disabled="!creator_name" @click.prevent="createRoom" 
+                  class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
         </form>
       </div>
 
@@ -43,59 +38,24 @@
           </div>
 
           <div class="form-label-group">
-            <input type="text" class="form-control" placeholder="Room ID" required="">
+            <input v-model="room_id" type="text" class="form-control" placeholder="Room ID" required="">
             <label>Room ID</label>
           </div>
 
           <div class="form-label-group">
-            <input v-model="username" type="text" class="form-control" placeholder="Username" required="">
+            <input v-model="joiner_name" type="text" class="form-control" placeholder="Username" required="">
             <label>Username</label>
           </div>
 
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Join a Room</button>
+          <button :disabled="!joiner_name || !room_id" @click.prevent="joinRoom(room_id)"
+                  class="btn btn-lg btn-primary btn-block" type="submit">
+              Join a Room
+          </button>
         </form>
       </div>
     </div>
 
     <hr>
-    <h4 class="text-muted text-center mb-3">Things under the here are gonna delete when new "join a room" system is completed.</h4>
-
-    <div class="row">
-      <div class="col-lg-4 mb-3">
-        <div class="card mx-auto" style="width: 20rem;">
-          <div class="card-body">
-            <h5 class="card-title">Create a Room here</h5>
-            <input v-model="username" id="name_room01" type="text" placeholder="Your Name" class="form-control mb-2">
-            <div class="clearfix">
-              <button @click="createRoom" :disabled="username.length == 0"
-                id="create_room01" type="button" class="btn btn-sm btn-primary float-right" >
-                Create a room
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-for="(room, index) in rooms" :key="room.id" class="col-lg-4 mb-3">
-        <div class="card mx-auto" style="width: 20rem;">
-          <div class="card-body">
-            <h5 class="card-title">Room {{ index + 1 }}</h5>
-            <div id="status_room01">
-              <h6 v-if="room.status !== 'empty'" id="status_room01" class="card-subtitle mb-2 text-muted"> {{ room.status }}: {{ room.nplayers }} / 4 </h6>
-              <div v-else id="status_room01" class="spinner-border text-primary mb-2" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </div>
-            <input v-model="username" type="text" placeholder="Your Name" class="form-control mb-2">
-            <div class="clearfix">
-              <button :disabled="room.nplayers == 0 || room.nplayers == 4 || username.length == 0"  @click="joinRoom(room.id, index)"
-                id="join_room01" type="button" class="btn btn-sm btn-primary float-right">
-                Join a room
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe> -->
   </main>
 </template>
@@ -111,7 +71,9 @@ export default {
     return {
       roomStatus: 'empty', /* possible values: hosted, full, empty */
       roomPlayers: 0,
-      username: ''
+      creator_name: '',
+      joiner_name: '',
+      room_id: ''
     }
   },
   computed: {
@@ -131,27 +93,28 @@ export default {
   methods: {
     createRoom: function () {
       /** Create room in firestore, register the host's name
-            * and navigate to the waiting room */
+        * and navigate to the waiting room */
 
       // initializing room
       const room = {
-        users: [ { username: this.username, role: 'host', damage: 0 } ],
+        users: [ { username: this.creator_name, role: 'host', damage: 0 } ],
         events: [
           // events have action and author properties
           // action can be an object
           {
             action: 'room_created',
-            author: this.username
+            author: this.creator_name
           }
         ]
       }
 
       // add room to firstore and update state.room
       // and state.me
+      console.log('dispatching createRoom')
       this.$store.dispatch('createRoom', room)
     },
 
-    joinRoom: function (roomId = false, index = false) {
+    joinRoom: function (roomId = false) {
       /** Register the user name to the room,
            * and navigate to the waiting room */
       console.log('navigating to playroom')
@@ -162,11 +125,11 @@ export default {
       } else {
         // user is trying to join an already created room
         const user = {
-          username: this.username,
+          username: this.joiner_name,
           role: 'guest',
           damage: 0
         }
-        this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user, 'index': index })
+        this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user})
       }
 
       // navigate to playroom
@@ -177,11 +140,6 @@ export default {
     }
 
   },
-  created () {
-    // TODO: fetch first room from db and
-    //      initialize interface accordingly
-    this.$store.dispatch('fetchRooms')
-  }
 }
 </script>
 
