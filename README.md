@@ -1,4 +1,5 @@
-# hg-prairie-dog
+# Petit Table Game Parc
+
 
 ## Project setup
 ```
