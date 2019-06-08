@@ -1,8 +1,13 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header v-if="! isPlayroom"></app-header>
+    <div v-if="temp" class="text-center" style="margin-top: 40vh; margin-bottom: 44vh;">
+      <h1 class="mb-4">Don't reload the page! (;∀;) Because the page white out like this.</h1>
+      <a href="/"><h2>Go to Home Page</h2></a>
+      <a href="/prairie-dog"><h2>Go to Prairie Dog Index</h2></a>
+    </div>
     <router-view/>
-    <app-footer></app-footer>
+    <app-footer v-if="! isPlayroom && this.$route.name !== 'about'"></app-footer>
   </div>
 </template>
 
@@ -10,10 +15,34 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 
+import { mapState, mapGetters } from 'vuex'
+
 export default {
+  data () {
+    return {
+      isPlayroom: false,
+      temp: false
+    }
+  },
   components: {
     'app-header': Header,
     'app-footer': Footer
+  },
+  watch: {
+    '$route': function (to, from) {
+      if(to.name === 'prairiedogplayroom') {
+        this.isPlayroom = true
+      } else {
+        this.isPlayroom = false
+      }
+    }
+  },
+  created () {
+    if(this.$route.name === 'prairiedogplayroom') {
+      this.temp = true
+    } else {
+      this.temp = false
+    }
   }
 }
 </script>
@@ -34,10 +63,19 @@ main {
 
 aside {
   padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 img {
   width: 100%;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+*:focus {
+ box-shadow:none !important;
 }
 
 .back {

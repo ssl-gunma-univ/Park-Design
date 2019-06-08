@@ -25,8 +25,8 @@
             <label>Username</label>
           </div>
 
-          <button :disabled="!creator_name" @click.prevent="createRoom" 
-                  class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
+          <button :disabled="!creator_name" @click.prevent="createRoom"
+            class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
         </form>
       </div>
 
@@ -127,7 +127,7 @@ export default {
           role: 'guest',
           damage: 0
         }
-        this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user})
+        this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user })
       }
 
       // navigate to playroom
@@ -136,8 +136,7 @@ export default {
         params: { 'roomId': roomId }
       })
     }
-
-  },
+  }
 }
 </script>
 

@@ -72,7 +72,6 @@ export default {
       user.damage = 0
     }
 
-
     db.collection('rooms').doc(state.room.id).update({
       users: users,
       cards: cards,
@@ -123,6 +122,7 @@ export default {
     console.log('remaining number of cards : ' + remaining)
 
     // update db
+    state.room.cards = cards
     db.collection('rooms').doc(state.room.id).update({
       users: users,
       cards: cards,
@@ -147,6 +147,7 @@ export default {
     })
       // NOTE: state is updated when db is updated
       .then(() => {
+        console.log('preprosessing then')
         dispatch('drawCards', cards)
       })
   },
@@ -201,10 +202,11 @@ export default {
         state.room.users[i].currentCard = randomDraw()
 
         // update db
+        state.room.remaining--;
         db.collection('rooms').doc(state.room.id).update({
           users: state.room.users,
           cards: state.room.cards,
-          remaining: state.room.remaining - 1,
+          remaining: state.room.remaining,
           events: firebase.firestore.FieldValue.arrayUnion({
             action: '[?] → [' + state.room.users[i].currentCard + ']',
             timestamp: Date.now()
@@ -252,7 +254,7 @@ export default {
           timestamp: Date.now()
         },
         {
-          action: total + ' < ' + state.room.lastCalledNumber,
+          action: total + ' ＜ ' + state.room.lastCalledNumber,
           author: 'SYSTEM_TOTAL',
           timestamp: Date.now()
         },
@@ -273,7 +275,7 @@ export default {
           timestamp: Date.now()
         },
           {
-          action: total + ' > ' + state.room.lastCalledNumber,
+          action: total + ' ≧ ' + state.room.lastCalledNumber,
           author: 'SYSTEM_TOTAL',
           timestamp: Date.now()
         },
@@ -334,7 +336,8 @@ export default {
         firstPlace.forEach(user => {
           db.collection('rooms').doc(state.room.id).update({
             events: firebase.firestore.FieldValue.arrayUnion({
-              action: '1st place : ' + user,
+              action: '1st : ' + user,
+              author: 'SYSTEM_RANKINGS',
               timestamp: Date.now()
             })
           })
@@ -342,7 +345,8 @@ export default {
         secondPlace.forEach(user => {
           db.collection('rooms').doc(state.room.id).update({
             events: firebase.firestore.FieldValue.arrayUnion({
-              action: '2nd place : ' + user,
+              action: '2nd : ' + user,
+              author: 'SYSTEM_RANKINGS',
               timestamp: Date.now()
             })
           })
@@ -350,7 +354,8 @@ export default {
         thirdPlace.forEach(user => {
           db.collection('rooms').doc(state.room.id).update({
             events: firebase.firestore.FieldValue.arrayUnion({
-              action: '3rd place : ' + user,
+              action: '3rd : ' + user,
+              author: 'SYSTEM_RANKINGS',
               timestamp: Date.now()
             })
           })
@@ -358,7 +363,8 @@ export default {
         fourthPlace.forEach(user => {
           db.collection('rooms').doc(state.room.id).update({
             events: firebase.firestore.FieldValue.arrayUnion({
-              action: '4th place : ' + user,
+              action: '4th : ' + user,
+              author: 'SYSTEM_RANKINGS',
               timestamp: Date.now()
             })
           })
@@ -385,5 +391,4 @@ export default {
         console.error(err)
       })
   }
-
 }
