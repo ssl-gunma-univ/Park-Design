@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <app-header v-if="! isPlayroom"></app-header>
-    <div v-if="temp" class="text-center" style="margin-top: 40vh; margin-bottom: 44vh;">
+    <!-- <div v-if="temp" class="text-center" style="margin-top: 40vh; margin-bottom: 44vh;">
       <h1 class="mb-4">Don't reload the page! (;∀;) Because the page white out like this.</h1>
       <a href="/"><h2>Go to Home Page</h2></a>
       <a href="/prairie-dog"><h2>Go to Prairie Dog Index</h2></a>
-    </div>
+    </div> -->
     <router-view/>
     <app-footer v-if="! isPlayroom && this.$route.name !== 'about'"></app-footer>
   </div>

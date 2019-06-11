@@ -2,7 +2,7 @@ import { db } from '@/main'
 import firebase from 'firebase'
 
 export default {
-  createRoom ({ commit, dispatch, state }, room) {
+  createRoom({ commit, dispatch, state }, room) {
     // writing room information to db
     /* card objects have type and cardsLeft properties */
 
@@ -34,19 +34,20 @@ export default {
   },
 
 
-  addUserToRoom ({ commit, state, dispatch }, payload) {
+  addUserToRoom({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
       // see firestore doc for details
       users: firebase.firestore.FieldValue.arrayUnion(payload.user),
       events: firebase.firestore.FieldValue.arrayUnion({
         action: 'joined!',
-        author: payload.user.username
+        author: payload.user.username,
+        createdAt: new Date().getTime() / 1000.0
       })
     })
     commit('userLogedIn', payload.user)
   },
 
-  watchRoom ({ commit, state }, roomId) {
+  watchRoom({ commit, state }, roomId) {
     // TODO: maybe better to have events stored in subcollection
     // that could be watched seperately
 
@@ -58,7 +59,7 @@ export default {
       })
   },
 
-  resetCards ({ commit, state }) {
+  resetCards({ commit, state }) {
     /* Set the cards to their initial state in db */
     const cards = state.cardsType.map((type, typeIdx) => {
       return {
@@ -77,14 +78,16 @@ export default {
       cards: cards,
       previousCards: cards,
       events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'GAME START!'
+        action: 'GAME START!',
+        createdAt: new Date().getTime() / 1000.0
+
       })
     })
-    .then(() => console.log('cards successfuly reset'))
-    .catch((err) => console.error(err))
+      .then(() => console.log('cards successfuly reset'))
+      .catch((err) => console.error(err))
   },
 
-  drawCards ({ commit, state }, cards) {
+  drawCards({ commit, state }, cards) {
     /* Only called from `host`.
     *
     * Assign a currentCard property to each user.
@@ -129,7 +132,7 @@ export default {
       remaining: remaining,
       events: firebase.firestore.FieldValue.arrayUnion({
         action: 'NEW ROUND',
-        timestamp: Date.now()
+        createdAt: new Date().getTime() / 1000.0
       })
     })
       // NOTE: state is updated when db is updated
@@ -153,7 +156,7 @@ export default {
       })
   },
 
-  call ({ commit, state }, { attempt, username }) {
+  call({ commit, state }, { attempt, username }) {
     // set last called number from textbox in PrairieDogPlauRoom.vue
     state.room.lastCalledNumber = attempt
 
@@ -172,13 +175,13 @@ export default {
       events: firebase.firestore.FieldValue.arrayUnion({
         action: 'called ' + state.room.lastCalledNumber,
         author: username,
-        timestamp: Date.now()
+        createdAt: new Date().getTime() / 1000.0
       })
     })
   },
 
   callPrairieDog({ commit, state }, username) {
-    
+
     var multiplier = 0
     var max = -1000000
     var total = 0
@@ -210,7 +213,7 @@ export default {
           remaining: state.room.remaining,
           events: firebase.firestore.FieldValue.arrayUnion({
             action: '[?] → [' + state.room.users[i].currentCard + ']',
-            timestamp: Date.now()
+            createdAt: new Date().getTime() / 1000.0
           })
         })
       }
@@ -252,17 +255,17 @@ export default {
         events: firebase.firestore.FieldValue.arrayUnion({
           action: 'Prairie Dog!',
           author: username,
-          timestamp: Date.now()
+          createdAt: new Date().getTime() / 1000.0
         },
-        {
-          action: total + ' ＜ ' + state.room.lastCalledNumber,
-          author: 'SYSTEM_TOTAL',
-          timestamp: Date.now()
-        },
-        {
-          action: 'Prairie Dog is SUCCEED!',
-          timestamp: Date.now()
-        })
+          {
+            action: total + ' ＜ ' + state.room.lastCalledNumber,
+            author: 'SYSTEM_TOTAL',
+            createdAt: new Date().getTime() / 1000.0
+          },
+          {
+            action: 'Prairie Dog is SUCCEED!',
+            createdAt: new Date().getTime() / 1000.0
+          })
       })
       if (turnIdx === 0) {
         turnIdx = state.room.users.length
@@ -273,17 +276,17 @@ export default {
         events: firebase.firestore.FieldValue.arrayUnion({
           action: 'Prairie Dog!',
           author: username,
-          timestamp: Date.now()
+          createdAt: new Date().getTime() / 1000.0
         },
           {
-          action: total + ' ≧ ' + state.room.lastCalledNumber,
-          author: 'SYSTEM_TOTAL',
-          timestamp: Date.now()
-        },
-        {
-          action: 'Prairie Dog is FAILED!',
-          timestamp: Date.now()
-        })
+            action: total + ' ≧ ' + state.room.lastCalledNumber,
+            author: 'SYSTEM_TOTAL',
+            createdAt: new Date().getTime() / 1000.0
+          },
+          {
+            action: 'Prairie Dog is FAILED!',
+            createdAt: new Date().getTime() / 1000.0
+          })
       })
     }
     state.room.users[turnIdx].damage++
@@ -332,7 +335,7 @@ export default {
         previousCards: state.room.cards.slice(),
         events: firebase.firestore.FieldValue.arrayUnion({
           action: 'GAME OVER!',
-          timestamp: Date.now()
+          createdAt: new Date().getTime() / 1000.0
         })
       }).then(() => {
         firstPlace.forEach(user => {
@@ -340,7 +343,7 @@ export default {
             events: firebase.firestore.FieldValue.arrayUnion({
               action: '1st : ' + user,
               author: 'SYSTEM_RANKINGS',
-              timestamp: Date.now()
+              createdAt: new Date().getTime() / 1000.0
             })
           })
         })
@@ -349,7 +352,7 @@ export default {
             events: firebase.firestore.FieldValue.arrayUnion({
               action: '2nd : ' + user,
               author: 'SYSTEM_RANKINGS',
-              timestamp: Date.now()
+              createdAt: new Date().getTime() / 1000.0
             })
           })
         })
@@ -358,7 +361,7 @@ export default {
             events: firebase.firestore.FieldValue.arrayUnion({
               action: '3rd : ' + user,
               author: 'SYSTEM_RANKINGS',
-              timestamp: Date.now()
+              createdAt: new Date().getTime() / 1000.0
             })
           })
         })
@@ -367,7 +370,7 @@ export default {
             events: firebase.firestore.FieldValue.arrayUnion({
               action: '4th : ' + user,
               author: 'SYSTEM_RANKINGS',
-              timestamp: Date.now()
+              createdAt: new Date().getTime() / 1000.0
             })
           })
         })
@@ -375,7 +378,7 @@ export default {
     }
   },
 
-  nextRound ({ commit, dispatch, state }) {
+  nextRound({ commit, dispatch, state }) {
     db.collection('rooms').doc(state.room.id).update({
       previousCards: state.room.cards.slice()
     })
@@ -385,7 +388,7 @@ export default {
       })
   },
 
-  destroyRoom ({ commit, state }) {
+  destroyRoom({ commit, state }) {
     db.collection('rooms').doc(state.room.id).delete().then(() => {
       // history.back(-1)
     })
@@ -394,15 +397,15 @@ export default {
       })
   },
 
-  brokeRoom ({commit, state}) {
+  brokeRoom({ commit, state }) {
     db.collection('rooms').doc(state.room.id).update({
-      roombroke : true
+      roombroke: true
     }).then(() => {
       // history.back(-1)
     })
       .catch((err) => {
         console.error(err)
       })
-    
+
   }
 }

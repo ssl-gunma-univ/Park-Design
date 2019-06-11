@@ -123,8 +123,9 @@ export default {
           // events have action and author properties
           // action can be an object
           {
-            action: "room created",
-            author: this.creator_name
+            action: "room created!",
+            author: this.creator_name,
+            createdAt: new Date().getTime()/1000.0
           }
         ]
       };

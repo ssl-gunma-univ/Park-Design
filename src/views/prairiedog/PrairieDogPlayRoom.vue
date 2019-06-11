@@ -229,51 +229,61 @@
         </div>
       </main>
 
-      <aside class="col-lg-3 d-flex px-1" style="height: 100vh;">
+      <aside class="col-lg-3 d-flex px-1" style="height: 100vh; ">
         <div class="card w-100">
           <div class="card-header">
             <b style="font-size: 20px;">Game Logs</b>
           </div>
 
+          <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
           <div class="card-body" style="height: 15rem; overflow: auto; position: relative;">
             <span class="d-flex-fill" style="position: absolute; bottom: 0;">
               <div v-for="(event, index) in events" :key="index" class="mb-2">
                 <span v-if="event.author == undefined" class="text-info">
                   <b>SYSTEM</b>
                   : {{ event.action }}
+                  <small>({{displayTime(event)}})</small>
                 </span>
                 <span v-else-if="event.author === 'SYSTEM_TOTAL'" class="text-primary">
                   <b>TOTAL</b>
                   : {{ event.action }}
+                  <small>({{displayTime(event)}})</small>
                 </span>
                 <span v-else-if="event.author === 'SYSTEM_RANKINGS'" class="text-muted">
                   <b>{{ event.action }}</b>
+                  <small>({{displayTime(event)}})</small>
                 </span>
                 <span v-else>
                   <b>{{ event.author }}</b>
                   : {{ event.action }}
+                  <small>({{displayTime(event)}})</small>
                 </span>
               </div>
             </span>
           </div>
+          <!-- </div> -->
 
           <div class="card-header">
             <b style="font-size: 20px;">Chat Logs</b>
           </div>
 
+          <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
           <div class="card-body" style="height: 30rem; overflow: auto; position: relative;">
             <span class="d-flex-fill" style="position: absolute; bottom: 0;">
-              <div v-for="message in messages" class="mb-2">
+              <div v-for="(message,index) in messages" :key="index" class="mb-2">
                 <b>{{message.username}}</b>
                 : {{message.message}}
-                <small>{{displayTime(message)}}</small>
+                <small>({{displayTime(message)}})</small>
 
                 <!-- <span class="time_date">11:01 AM | June 9</span> -->
                 <!-- <span class="time_date">{{message.createdAtJapan.toDate().toLocaleString()}}></span> -->
               </div>
             </span>
           </div>
+          <!-- </div> -->
+          <!--  -->
 
+          <!--  -->
           <div class="type_msg">
             <div class="input_msg_write">
               <input
@@ -283,14 +293,11 @@
                 class="write_msg"
                 placeholder="Type a message..."
               >
-              <button
-                class="msg_send_btn"
-                type="button"
-                @click="saveMessage"
-                :disabled="message.length == 0"
-              >
-                <i class="far fa-paper-plane"></i>
+              <button class="msg_send_btn" type="button" @click="saveMessage">
+                <i class="far fa-paper-plane" aria-hidden="true"></i>
               </button>
+
+              <!-- <a class="btn btn-lg msg_send_btn" @click="saveMessage" role="button"><i class="far fa-paper-plane" aria-hidden="true"></i></a> -->
             </div>
           </div>
           <div class="card-footer bg-dark text-white">
@@ -338,8 +345,8 @@ export default {
       // comments: [],
       message: "",
       messages: [],
-      roomid: "",
-      roombroke: false
+      roomid: ""
+      // roombroke: false
     };
   },
 
@@ -348,6 +355,9 @@ export default {
     roombroke: function(newQuestion, oldQuestion) {
       // this.answer = 'Waiting for you to stop typing...'
       this.doquitroom();
+      if (this.roombroke != true) {
+        this.fetchMessage();
+      }
     }
   },
 
@@ -444,8 +454,8 @@ export default {
       console.log("部屋解散がクリックされました。DestroyRoom");
       // this.room.roombroke = true;
       this.$store.dispatch("brokeRoom");
-      this.roombroke = this.room.roombroke;
-      this.doquitroom();
+      // this.roombroke = this.room.roombroke;
+      // this.doquitroom();
       this.$store.dispatch("destroyRoom");
     },
 
@@ -460,7 +470,7 @@ export default {
 
     saveMessage() {
       // save to firestore
-      if (this.message.length != 0) {
+      if (this.message.length != 0 && !this.roombroke) {
         /* this.$firestoreRefs.chat.add({
           message: this.message,
           createdAt: new Date(),
@@ -532,7 +542,8 @@ export default {
       var d = new Date(diff);
 
       if (d.getUTCFullYear() - 1970) {
-        return d.getUTCFullYear() - 1970 + "年前";
+        // return d.getUTCFullYear() - 1970 + "年前";
+        return "<1秒前";
       } else if (d.getUTCMonth()) {
         return d.getUTCMonth() + "ヶ月前";
       } else if (d.getUTCDate() - 1) {
@@ -556,6 +567,7 @@ export default {
       console.log("BeforeDoQuickRoom");
       if (this.roombroke == true) {
         console.log("DidQuickRoom");
+        alert("部屋が解散されました。");
         history.back(-1);
         // location.reload();
       }
@@ -563,19 +575,33 @@ export default {
   },
 
   created() {
-    //TODO: check if roomId is in localstorage here
+    // TODO: check if roomId is in localstorage here
+    // console.log("created");
     this.$store.dispatch("watchRoom", this.$route.params.roomId);
     this.getroomid();
-    if (this.me.username != undefined) {
+    if (this.roombroke != true) {
       this.fetchMessage();
     }
   },
 
-  updated() {
-    this.roombroke = this.room.roombroke;
-    console.log("updated");
-    // this.doquitroom();
+  mounted() {
+    console.log("mounted");
+    // if (this.roombroke != true) {
+    // this.fetchMessage();
+    // }
+    document.onscroll = e => {
+      this.position =
+        document.documentElement.scrollTop || document.body.scrollTop;
+    };
   }
+
+  // updated() {
+  //   // this.roombroke = this.room.roombroke;
+  //   // console.log("updated");
+  //   // this.doquitroom();
+  // },
+
+  // beforeUpdate() {}
 };
 </script>
 
@@ -670,8 +696,10 @@ export default {
   font-size: 17px;
   height: 33px;
   position: absolute;
-  right: 0;
+  /* right: 0; */
+  right: 2%;
   top: 11px;
+  /* width: 33px; */
   width: 33px;
 }
 </style>
