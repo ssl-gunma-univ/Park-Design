@@ -596,7 +596,7 @@ export default {
   }
 
   // updated() {
-  //   // this.roombroke = this.room.roombroke;
+    // this.roombroke = this.room.roombroke;
   //   // console.log("updated");
   //   // this.doquitroom();
   // },
