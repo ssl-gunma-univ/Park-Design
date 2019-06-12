@@ -21,12 +21,22 @@
           </div>
 
           <div class="form-label-group">
-            <input v-model="creator_name" type="text" class="form-control" placeholder="Username" required="">
+            <input
+              v-model="creator_name"
+              type="text"
+              class="form-control"
+              placeholder="Username"
+              required
+            >
             <label>Username</label>
           </div>
 
-          <button :disabled="!creator_name" @click.prevent="createRoom"
-            class="btn btn-lg btn-primary btn-block" type="submit">Create a Room</button>
+          <button
+            :disabled="!creator_name"
+            @click.prevent="createRoom"
+            class="btn btn-lg btn-primary btn-block"
+            type="submit"
+          >Create a Room</button>
         </form>
       </div>
 
@@ -38,19 +48,33 @@
           </div>
 
           <div class="form-label-group">
-            <input v-model="room_id" type="text" class="form-control" placeholder="Room ID" required="">
+            <input
+              v-model="room_id"
+              type="text"
+              class="form-control"
+              placeholder="Room ID"
+              required
+            >
             <label>Room ID</label>
           </div>
 
           <div class="form-label-group">
-            <input v-model="joiner_name" type="text" class="form-control" placeholder="Username" required="">
+            <input
+              v-model="joiner_name"
+              type="text"
+              class="form-control"
+              placeholder="Username"
+              required
+            >
             <label>Username</label>
           </div>
 
-          <button :disabled="!joiner_name || !room_id" @click.prevent="joinRoom(room_id)"
-                  class="btn btn-lg btn-primary btn-block" type="submit">
-              Join a Room
-          </button>
+          <button
+            :disabled="!joiner_name || !room_id"
+            @click.prevent="joinRoom(room_id)"
+            class="btn btn-lg btn-primary btn-block"
+            type="submit"
+          >Join a Room</button>
         </form>
       </div>
     </div>
@@ -59,85 +83,85 @@
 </template>
 
 <script>
-
 // import { db } from '@/main'
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'prairie-dog',
-  data () {
+  name: "prairie-dog",
+  data() {
     return {
-      roomStatus: 'empty', /* possible values: hosted, full, empty */
+      roomStatus: "empty" /* possible values: hosted, full, empty */,
       roomPlayers: 0,
-      creator_name: '',
-      joiner_name: '',
-      room_id: ''
-    }
+      creator_name: "",
+      joiner_name: "",
+      room_id: ""
+    };
   },
   computed: {
     ...mapState([
-      'rooms',
-      'room' // always update when state changes
+      "rooms",
+      "room" // always update when state changes
     ])
   },
   watch: {
-    room: function (oldRoom, newRoom) {
+    room: function(oldRoom, newRoom) {
       if (this.room.id) {
-        console.log('room.id', this.room.id)
-        this.joinRoom()
+        console.log("room.id", this.room.id);
+        this.joinRoom();
       }
     }
   },
   methods: {
-    createRoom: function () {
+    createRoom: function() {
       /** Create room in firestore, register the host's name
-        * and navigate to the waiting room */
+       * and navigate to the waiting room */
 
       // initializing room
       const room = {
-        users: [ { username: this.creator_name, role: 'host', damage: 0 } ],
+        users: [{ username: this.creator_name, role: "host", damage: 0 }],
         events: [
           // events have action and author properties
           // action can be an object
           {
-            action: 'room created',
-            author: this.creator_name
+            action: "room created!",
+            author: this.creator_name,
+            createdAt: new Date().getTime()/1000.0
           }
         ]
-      }
+      };
 
       // add room to firstore and update state.room
       // and state.me
-      console.log('dispatching createRoom')
-      this.$store.dispatch('createRoom', room)
+      console.log("dispatching createRoom");
+      this.$store.dispatch("createRoom", room);
     },
 
-    joinRoom: function (roomId = false) {
+    joinRoom: function(roomId = false) {
       /** Register the user name to the room,
-           * and navigate to the waiting room */
-      console.log('navigating to playroom')
+       * and navigate to the waiting room */
+      console.log("navigating to playroom");
 
       if (!roomId) {
         // the room has just been created in db
-        roomId = this.room.id
+        roomId = this.room.id;
       } else {
         // user is trying to join an already created room
         const user = {
           username: this.joiner_name,
-          role: 'guest',
+          role: "guest",
           damage: 0
-        }
-        this.$store.dispatch('addUserToRoom', { 'roomId': roomId, 'user': user })
+        };
+        this.$store.dispatch("addUserToRoom", { roomId: roomId, user: user });
       }
 
       // navigate to playroom
       this.$router.push({
-        name: 'prairiedogplayroom',
-        params: { 'roomId': roomId }
-      })
+        name: "prairiedogplayroom",
+        params: { roomId: roomId }
+      });
     }
   }
-}
+};
 </script>
 
 <style>
@@ -156,7 +180,7 @@ export default {
 .form-label-group > input,
 .form-label-group > label {
   height: 3.125rem;
-  padding: .75rem;
+  padding: 0.75rem;
 }
 
 .form-label-group > label {
@@ -171,8 +195,8 @@ export default {
   pointer-events: none;
   cursor: text; /* Match the input under the label */
   border: 1px solid transparent;
-  border-radius: .25rem;
-  transition: all .1s ease-in-out;
+  border-radius: 0.25rem;
+  transition: all 0.1s ease-in-out;
 }
 
 .form-label-group input::-webkit-input-placeholder {
@@ -197,12 +221,12 @@ export default {
 
 .form-label-group input:not(:placeholder-shown) {
   padding-top: 1.25rem;
-  padding-bottom: .25rem;
+  padding-bottom: 0.25rem;
 }
 
 .form-label-group input:not(:placeholder-shown) ~ label {
-  padding-top: .25rem;
-  padding-bottom: .25rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   font-size: 12px;
   color: #777;
 }
