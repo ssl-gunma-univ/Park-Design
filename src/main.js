@@ -31,7 +31,7 @@ Vue.use(firestorePlugin)
 //  }
 
 
-/* var firebaseConfig = {
+var firebaseConfig = {
   apiKey: 'AIzaSyAowpGLtG2tuzt95Xv51b6NwNPqNa5QFQQ',
   authDomain: 'vuex-test-a61dc.firebaseapp.com',
   databaseURL: 'https://vuex-test-a61dc.firebaseio.com',
@@ -39,17 +39,17 @@ Vue.use(firestorePlugin)
   storageBucket: 'vuex-test-a61dc.appspot.com',
   messagingSenderId: '370217216011',
   appId: '1:370217216011:web:189319d56ffb29dd'
-} */
+}
 
-var firebaseConfig = {
-  apiKey: "AIzaSyDqjPTjjIVYbnQpDAkiw3E0QGAiRB651_8",
-  authDomain: "yt-vue-firestore-chat-bc170.firebaseapp.com",
-  databaseURL: "https://yt-vue-firestore-chat-bc170.firebaseio.com",
-  projectId: "yt-vue-firestore-chat-bc170",
-  storageBucket: "yt-vue-firestore-chat-bc170.appspot.com",
-  messagingSenderId: "21103090828",
-  appId: "1:21103090828:web:02eebe3c23c74a54"
-};
+// var firebaseConfig = {
+//   apiKey: "AIzaSyDqjPTjjIVYbnQpDAkiw3E0QGAiRB651_8",
+//   authDomain: "yt-vue-firestore-chat-bc170.firebaseapp.com",
+//   databaseURL: "https://yt-vue-firestore-chat-bc170.firebaseio.com",
+//   projectId: "yt-vue-firestore-chat-bc170",
+//   storageBucket: "yt-vue-firestore-chat-bc170.appspot.com",
+//   messagingSenderId: "21103090828",
+//   appId: "1:21103090828:web:02eebe3c23c74a54"
+// };
 
 firebase.initializeApp(firebaseConfig)
 

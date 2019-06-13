@@ -15,7 +15,11 @@
             >
               <div class="col-9">
                 <img
-                  v-if="previousCardsLeft[index - 1].type === '?'"
+                  v-if="previousCardsLeft[index - 1].type === undefined"
+                  src="@/assets/PrairieDogCards/card.jpg"
+                >
+                <img
+                  v-else-if="previousCardsLeft[index - 1].type === '?'"
                   class="w-100 img-thumbnail shadow"
                   src="@/assets/PrairieDogCards/？.jpg"
                 >
@@ -33,7 +37,7 @@
         </div>
       </aside>
 
-      <main class="col-lg-9 col-xl-7 px-1">
+      <main class="col-lg-9 col-xl-7 px-2">
         <div class="gameboard p-4 rounded shadow border">
           <div class="row mb-2">
             <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow">
@@ -60,7 +64,7 @@
                     v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.jpg')"
                   >
                 </p>
-                <p class="mt-3">ダメージ：{{ userleft.damage }}</p>
+                <p v-if="userleft.damage !== undefined" class="mt-3">ダメージ：{{ userleft.damage }}</p>
               </div>
             </div>
 
@@ -83,7 +87,7 @@
                     v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.jpg')"
                   >
                 </p>
-                <p class="mt-3">ダメージ：{{ usertop.damage }}</p>
+                <p v-if="usertop.damage !== undefined" class="mt-3">ダメージ：{{ usertop.damage }}</p>
               </div>
             </div>
 
@@ -106,7 +110,7 @@
                     v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.jpg')"
                   >
                 </p>
-                <p class="mt-3">ダメージ：{{ userright.damage }}</p>
+                <p v-if="userright.damage !== undefined" class="mt-3">ダメージ：{{ userright.damage }}</p>
               </div>
             </div>
           </div>
@@ -237,26 +241,34 @@
 
           <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
           <div class="card-body" style="height: 15rem; overflow: auto; position: relative;">
-            <span class="d-flex-fill" style="position: absolute; bottom: 0;">
+            <span class="d-flex-fill" style="position: absolute; bottom: 0; width:90%;">
               <div v-for="(event, index) in events" :key="index" class="mb-2">
                 <span v-if="event.author == undefined" class="text-info">
+                  <div class="clearfix">
                   <b>SYSTEM</b>
                   : {{ event.action }}
-                  <small>({{displayTime(event)}})</small>
+                  <small class="text-muted float-right">({{displayTime(event)}})</small>
+                  </div>
                 </span>
                 <span v-else-if="event.author === 'SYSTEM_TOTAL'" class="text-primary">
+                  <div class="clearfix">
                   <b>TOTAL</b>
                   : {{ event.action }}
-                  <small>({{displayTime(event)}})</small>
+                  <small class="text-muted float-right">({{displayTime(event)}})</small>
+                  </div>
                 </span>
                 <span v-else-if="event.author === 'SYSTEM_RANKINGS'" class="text-muted">
+                  <div class="clearfix">
                   <b>{{ event.action }}</b>
-                  <small>({{displayTime(event)}})</small>
+                  <small class="text-muted float-right">({{displayTime(event)}})</small>
+                  </div>
                 </span>
                 <span v-else>
-                  <b>{{ event.author }}</b>
-                  : {{ event.action }}
-                  <small>({{displayTime(event)}})</small>
+                  <div class="clearfix">
+                    <b>{{ event.author }}</b>
+                    : {{ event.action }}
+                    <small class="text-muted float-right">({{displayTime(event)}})</small>
+                  </div>
                 </span>
               </div>
             </span>
@@ -269,11 +281,13 @@
 
           <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
           <div class="card-body" style="height: 30rem; overflow: auto; position: relative;">
-            <span class="d-flex-fill" style="position: absolute; bottom: 0;">
+            <span class="d-flex-fill" style="position: absolute; bottom: 0; width:90%;">
               <div v-for="(message,index) in messages" :key="index" class="mb-2">
-                <b>{{message.username}}</b>
-                : {{message.message}}
-                <small>({{displayTime(message)}})</small>
+                <div class="clearfix">
+                  <b>{{message.username}}</b>
+                  : {{message.message}}
+                  <small class="text-muted float-right">({{displayTime(message)}})</small>
+                </div>
 
                 <!-- <span class="time_date">11:01 AM | June 9</span> -->
                 <!-- <span class="time_date">{{message.createdAtJapan.toDate().toLocaleString()}}></span> -->
@@ -290,11 +304,11 @@
                 @keyup.enter="saveMessage"
                 v-model="message"
                 type="text"
-                class="write_msg"
+                class="write_msg px-2"
                 placeholder="Type a message..."
               >
               <button class="msg_send_btn" type="button" @click="saveMessage">
-                <i class="far fa-paper-plane" aria-hidden="true"></i>
+                <i class="far fa-paper-plane" style="padding-right: 2px;" aria-hidden="true"></i>
               </button>
 
               <!-- <a class="btn btn-lg msg_send_btn" @click="saveMessage" role="button"><i class="far fa-paper-plane" aria-hidden="true"></i></a> -->
@@ -362,7 +376,7 @@ export default {
   },
 
   /*   firestore() {
-    
+
     return {
       // firestoreのcommentsコレクションを参照
       comments: db.collection("rooms").doc(`${this.roomid}`).collection("chat").orderBy("createdAt")
@@ -451,7 +465,7 @@ export default {
     },
 
     destroyRoom() {
-      console.log("部屋解散がクリックされました。DestroyRoom");
+      console.log("the room has been removed");
       // this.room.roombroke = true;
       this.$store.dispatch("brokeRoom");
       // this.roombroke = this.room.roombroke;
@@ -543,7 +557,7 @@ export default {
 
       if (d.getUTCFullYear() - 1970) {
         // return d.getUTCFullYear() - 1970 + "年前";
-        return "<1秒前";
+        return "1秒前";
       } else if (d.getUTCMonth()) {
         return d.getUTCMonth() + "ヶ月前";
       } else if (d.getUTCDate() - 1) {
@@ -564,9 +578,8 @@ export default {
     },
 
     doquitroom() {
-      console.log("BeforeDoQuickRoom");
       if (this.roombroke == true) {
-        console.log("DidQuickRoom");
+        console.log("doQuitRoom was executed");
         alert("部屋が解散されました。");
         history.back(-1);
         // location.reload();
