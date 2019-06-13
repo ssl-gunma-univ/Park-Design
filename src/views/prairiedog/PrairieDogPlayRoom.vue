@@ -54,7 +54,11 @@
                 <h3 id="name_p1">{{ userleft.username }}</h3>
                 <p v-if="playing || gameOver">
                   <img
-                    v-if="userleft.currentCard === '?'"
+                    v-if="userleft.currentCard === undefined"
+                    src="@/assets/PrairieDogCards/card.jpg"
+                  >
+                  <img
+                    v-else-if="userleft.currentCard === '?'"
                     class="w-75 img-thumbnail shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
@@ -77,7 +81,11 @@
                 <h3 id="name_p2">{{ usertop.username }}</h3>
                 <p v-if="playing || gameOver">
                   <img
-                    v-if="usertop.currentCard === '?'"
+                    v-if="usertop.currentCard === undefined"
+                    src="@/assets/PrairieDogCards/card.jpg"
+                  >
+                  <img
+                    v-else-if="usertop.currentCard === '?'"
                     class="w-75 img-thumbnail shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
@@ -100,7 +108,11 @@
                 <h3 id="name_p3">{{ userright.username }}</h3>
                 <p v-if="playing || gameOver">
                   <img
-                    v-if="userright.currentCard === '?'"
+                    v-if="userright.currentCard === undefined"
+                    src="@/assets/PrairieDogCards/card.jpg"
+                  >
+                  <img
+                    v-else-if="userright.currentCard === '?'"
                     class="w-75 img-thumbnail shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
@@ -186,7 +198,11 @@
               </p>
               <p v-if="isPrairieDogCalled">
                 <img
-                  v-if="getMyCard() === '?'"
+                  v-if="getMyCard() === undefined"
+                  src="@/assets/PrairieDogCards/card.jpg"
+                >
+                <img
+                  v-else-if="getMyCard() === '?'"
                   class="w-75 img-thumbnail shadow"
                   src="@/assets/PrairieDogCards/？.jpg"
                 >
@@ -236,68 +252,37 @@
       <aside class="col-lg-3 d-flex px-1" style="height: 100vh; ">
         <div class="card w-100">
           <div class="card-header">
-            <b style="font-size: 20px;">Game Logs</b>
+            <b style="font-size: 20px;">Logs</b>
           </div>
 
-          <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
-          <div class="card-body" style="height: 15rem; overflow: auto; position: relative;">
-            <span class="d-flex-fill" style="position: absolute; bottom: 0; width:90%;">
-              <div v-for="(event, index) in events" :key="index" class="mb-2">
-                <span v-if="event.author == undefined" class="text-info">
-                  <div class="clearfix">
-                  <b>SYSTEM</b>
-                  : {{ event.action }}
-                  <small class="text-muted float-right">({{displayTime(event)}})</small>
-                  </div>
-                </span>
-                <span v-else-if="event.author === 'SYSTEM_TOTAL'" class="text-primary">
-                  <div class="clearfix">
-                  <b>TOTAL</b>
-                  : {{ event.action }}
-                  <small class="text-muted float-right">({{displayTime(event)}})</small>
-                  </div>
-                </span>
-                <span v-else-if="event.author === 'SYSTEM_RANKINGS'" class="text-muted">
-                  <div class="clearfix">
-                  <b>{{ event.action }}</b>
-                  <small class="text-muted float-right">({{displayTime(event)}})</small>
-                  </div>
-                </span>
-                <span v-else>
-                  <div class="clearfix">
-                    <b>{{ event.author }}</b>
-                    : {{ event.action }}
-                    <small class="text-muted float-right">({{displayTime(event)}})</small>
-                  </div>
-                </span>
-              </div>
-            </span>
-          </div>
-          <!-- </div> -->
-
-          <div class="card-header">
-            <b style="font-size: 20px;">Chat Logs</b>
-          </div>
-
-          <!-- <div class="overflow-auto" :class="{'sticky': position > 0}"> -->
           <div class="card-body" style="height: 30rem; overflow: auto; position: relative;">
             <span class="d-flex-fill" style="position: absolute; bottom: 0; width:90%;">
               <div v-for="(message,index) in messages" :key="index" class="mb-2">
                 <div class="clearfix">
-                  <b>{{message.username}}</b>
-                  : {{message.message}}
-                  <small class="text-muted float-right">({{displayTime(message)}})</small>
-                </div>
 
-                <!-- <span class="time_date">11:01 AM | June 9</span> -->
-                <!-- <span class="time_date">{{message.createdAtJapan.toDate().toLocaleString()}}></span> -->
+                <span v-if="message.username === 'SYSTEM_ADMINISTRATOR'" class="text-info">
+                    <b>SYSTEM</b>
+                    : {{ message.message }}
+                </span>
+                <span v-else-if="message.username === 'SYSTEM_TOTAL'" class="text-primary">
+                  <b>TOTAL</b>
+                  : {{ message.message }}
+                </span>
+                <span v-else-if="message.username === 'SYSTEM_RANKINGS'" class="text-muted">
+                  <b>{{ message.message }}</b>
+                </span>
+                <span v-else>
+                    <b>{{message.username}}</b>
+                    : {{message.message}}
+                </span>
+
+                <small class="text-muted float-right">({{displayTime(message)}})</small>
+
+                </div>
               </div>
             </span>
           </div>
-          <!-- </div> -->
-          <!--  -->
 
-          <!--  -->
           <div class="type_msg">
             <div class="input_msg_write">
               <input
@@ -310,8 +295,6 @@
               <button class="msg_send_btn" type="button" @click="saveMessage">
                 <i class="far fa-paper-plane" style="padding-right: 2px;" aria-hidden="true"></i>
               </button>
-
-              <!-- <a class="btn btn-lg msg_send_btn" @click="saveMessage" role="button"><i class="far fa-paper-plane" aria-hidden="true"></i></a> -->
             </div>
           </div>
           <div class="card-footer bg-dark text-white">
@@ -421,7 +404,7 @@ export default {
     },
 
     getMyDamage() {
-      if (this.room.users[this.myIndexInRoom].damage !== undefined) {
+      if (this.room.users[this.myIndexInRoom] !== undefined && this.room.users[this.myIndexInRoom].damage !== undefined) {
         return this.room.users[this.myIndexInRoom].damage;
       }
     },
@@ -501,7 +484,7 @@ export default {
             username: this.me.username
           })
           .then(function(docRef) {
-            console.log("Document written with ID: ", docRef.id);
+            // console.log("Document written with ID: ", docRef.id);
           })
           .catch(function(error) {
             console.error("Error adding document: ", error);
@@ -679,14 +662,6 @@ export default {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b0d4e3', endColorstr='#88bacf',GradientType=0 ); /* IE6-9 */
 }
 
-/*  */
-.time_date {
-  color: #747474;
-  display: block;
-  font-size: 12px;
-  margin: 8px 0 0;
-}
-
 .input_msg_write input {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
   border: medium none;
@@ -700,6 +675,7 @@ export default {
   border-top: 1px solid #c4c4c4;
   position: relative;
 }
+
 .msg_send_btn {
   background: #05728f none repeat scroll 0 0;
   border: medium none;
@@ -711,7 +687,7 @@ export default {
   position: absolute;
   /* right: 0; */
   right: 2%;
-  top: 11px;
+  top: 8px;
   /* width: 33px; */
   width: 33px;
 }

@@ -16,7 +16,6 @@ export default {
   data () {
     return {
       isPlayroom: false,
-      temp: false
     }
   },
   components: {
@@ -30,16 +29,6 @@ export default {
       } else {
         this.isPlayroom = false
       }
-    }
-  },
-  created () {
-    if(location.pathname.match(/^\/playroom/)) {
-      this.temp = true
-    }
-    if(this.$route.name === 'prairiedogplayroom') {
-      this.temp = true
-    } else {
-      this.temp = false
     }
   }
 }

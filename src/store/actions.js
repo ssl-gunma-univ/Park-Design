@@ -37,12 +37,17 @@ export default {
   addUserToRoom({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
       // see firestore doc for details
-      users: firebase.firestore.FieldValue.arrayUnion(payload.user),
-      events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'joined!',
-        author: payload.user.username,
-        createdAt: new Date().getTime() / 1000.0
-      })
+      users: firebase.firestore.FieldValue.arrayUnion(payload.user)
+    }).then(() => {
+      db.collection("rooms")
+        .doc(state.room.id)
+        .collection("chat")
+        .add({
+          message: 'joined!',
+          createdAtJapan: new Date(),
+          createdAt: new Date().getTime() / 1000.0,
+          username: payload.user.username
+        })
     })
     commit('userLogedIn', payload.user)
   },
@@ -76,14 +81,20 @@ export default {
     db.collection('rooms').doc(state.room.id).update({
       users: users,
       cards: cards,
-      previousCards: cards,
-      events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'GAME START!',
-        createdAt: new Date().getTime() / 1000.0
-
-      })
+      previousCards: cards
     })
-      .then(() => console.log('cards successfuly reset'))
+      .then(() => {
+        console.log('cards successfuly reset')
+        db.collection("rooms")
+          .doc(state.room.id)
+          .collection("chat")
+          .add({
+            message: 'GAME START!',
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0,
+            username: 'SYSTEM_ADMINISTRATOR'
+          })
+      })
       .catch((err) => console.error(err))
   },
 
@@ -129,14 +140,21 @@ export default {
     db.collection('rooms').doc(state.room.id).update({
       users: users,
       cards: cards,
-      remaining: remaining,
-      events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'NEW ROUND',
-        createdAt: new Date().getTime() / 1000.0
-      })
+      remaining: remaining
     })
       // NOTE: state is updated when db is updated
-      .then(() => console.log('users have drawn cards'))
+      .then(() => {
+        console.log('users have drawn cards')
+        db.collection("rooms")
+          .doc(state.room.id)
+          .collection("chat")
+          .add({
+            message: 'NEW ROUND',
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0,
+            username: 'SYSTEM_ADMINISTRATOR'
+          })
+      })
   },
 
   preprocessing({ commit, dispatch, state }, cards) {
@@ -171,12 +189,18 @@ export default {
     // set lastCalledNumber and currentTurnIdx to firestore
     db.collection('rooms').doc(state.room.id).update({
       currentTurnIdx: currentTurnIdx,
-      lastCalledNumber: state.room.lastCalledNumber,
-      events: firebase.firestore.FieldValue.arrayUnion({
-        action: 'called ' + state.room.lastCalledNumber,
-        author: username,
-        createdAt: new Date().getTime() / 1000.0
-      })
+      lastCalledNumber: state.room.lastCalledNumber
+    })
+      .then(() => {
+        db.collection("rooms")
+          .doc(state.room.id)
+          .collection("chat")
+          .add({
+            message: 'called ' + state.room.lastCalledNumber,
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0,
+            username: username
+          })
     })
   },
 
@@ -203,7 +227,9 @@ export default {
           return cardDrawn
         }
 
-        state.room.users[i].currentCard = randomDraw()
+        let currentCard = randomDraw()
+
+        state.room.users[i].currentCard = currentCard
 
         // update db
         state.room.remaining--;
@@ -211,10 +237,17 @@ export default {
           users: state.room.users,
           cards: state.room.cards,
           remaining: state.room.remaining,
-          events: firebase.firestore.FieldValue.arrayUnion({
-            action: '[?] → [' + state.room.users[i].currentCard + ']',
-            createdAt: new Date().getTime() / 1000.0
-          })
+        })
+          .then(() => {
+            db.collection("rooms")
+              .doc(state.room.id)
+              .collection("chat")
+              .add({
+                message: '[?] → [' + currentCard + ']',
+                createdAtJapan: new Date(),
+                createdAt: new Date().getTime() / 1000.0,
+                username: 'SYSTEM_ADMINISTRATOR'
+              })
         })
       }
     }
@@ -251,42 +284,69 @@ export default {
     /* damage */
     let turnIdx = state.room.currentTurnIdx
     if (state.room.lastCalledNumber > total) {
-      db.collection('rooms').doc(state.room.id).update({
-        events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'Prairie Dog!',
-          author: username,
-          createdAt: new Date().getTime() / 1000.0
-        },
-          {
-            action: total + ' ＜ ' + state.room.lastCalledNumber,
-            author: 'SYSTEM_TOTAL',
-            createdAt: new Date().getTime() / 1000.0
-          },
-          {
-            action: 'Prairie Dog is SUCCEED!',
-            createdAt: new Date().getTime() / 1000.0
-          })
-      })
+      db.collection("rooms")
+        .doc(state.room.id)
+        .collection("chat")
+        .add({
+          message: 'Prairie Dog!',
+          createdAtJapan: new Date(),
+          createdAt: new Date().getTime() / 1000.0,
+          username: username
+        }).then(() => {
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: total + ' ＜ ' + state.room.lastCalledNumber,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.001,
+              username: 'SYSTEM_TOTAL'
+            })
+        }).then(() => {
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: 'Prairie Dog is SUCCEED!',
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.002,
+              username: 'SYSTEM_ADMINISTRATOR'
+            })
+        })
+      
       if (turnIdx === 0) {
         turnIdx = state.room.users.length
       }
       turnIdx--
     } else {
-      db.collection('rooms').doc(state.room.id).update({
-        events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'Prairie Dog!',
-          author: username,
-          createdAt: new Date().getTime() / 1000.0
-        },
-          {
-            action: total + ' ≧ ' + state.room.lastCalledNumber,
-            author: 'SYSTEM_TOTAL',
-            createdAt: new Date().getTime() / 1000.0
-          },
-          {
-            action: 'Prairie Dog is FAILED!',
-            createdAt: new Date().getTime() / 1000.0
-          })
+      db.collection("rooms")
+        .doc(state.room.id)
+        .collection("chat")
+        .add({
+          message: 'Prairie Dog!',
+          createdAtJapan: new Date(),
+          createdAt: new Date().getTime() / 1000.0,
+          username: username
+        }).then(() => {
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: total + ' ≧ ' + state.room.lastCalledNumber,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.001,
+              username: 'SYSTEM_TOTAL'
+            })
+        }).then(() => {
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: 'Prairie Dog is FAILED!',
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.002,
+              username: 'SYSTEM_ADMINISTRATOR'
+            })
       })
     }
     state.room.users[turnIdx].damage++
@@ -332,47 +392,64 @@ export default {
         playing: false,
         isPrairieDogCalled: true,
         gameOver: true,
-        previousCards: state.room.cards.slice(),
-        events: firebase.firestore.FieldValue.arrayUnion({
-          action: 'GAME OVER!',
-          createdAt: new Date().getTime() / 1000.0
-        })
+        previousCards: state.room.cards.slice()
+      }).then(() => {
+        db.collection("rooms")
+          .doc(state.room.id)
+          .collection("chat")
+          .add({
+            message: 'GAME OVER!',
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0 + 0.003,
+            username: 'SYSTEM_ADMINISTRATOR'
+          })
       }).then(() => {
         firstPlace.forEach(user => {
-          db.collection('rooms').doc(state.room.id).update({
-            events: firebase.firestore.FieldValue.arrayUnion({
-              action: '1st : ' + user,
-              author: 'SYSTEM_RANKINGS',
-              createdAt: new Date().getTime() / 1000.0
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: '1st : ' + user,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.004,
+              username: 'SYSTEM_RANKINGS'
             })
-          })
         })
+      }).then(() => {
         secondPlace.forEach(user => {
-          db.collection('rooms').doc(state.room.id).update({
-            events: firebase.firestore.FieldValue.arrayUnion({
-              action: '2nd : ' + user,
-              author: 'SYSTEM_RANKINGS',
-              createdAt: new Date().getTime() / 1000.0
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: '2nd : ' + user,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.005,
+              username: 'SYSTEM_RANKINGS'
             })
-          })
         })
+      }).then(() => {
         thirdPlace.forEach(user => {
-          db.collection('rooms').doc(state.room.id).update({
-            events: firebase.firestore.FieldValue.arrayUnion({
-              action: '3rd : ' + user,
-              author: 'SYSTEM_RANKINGS',
-              createdAt: new Date().getTime() / 1000.0
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: '3rd : ' + user,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.006,
+              username: 'SYSTEM_RANKINGS'
             })
-          })
         })
+      }).then(() => {
         fourthPlace.forEach(user => {
-          db.collection('rooms').doc(state.room.id).update({
-            events: firebase.firestore.FieldValue.arrayUnion({
-              action: '4th : ' + user,
-              author: 'SYSTEM_RANKINGS',
-              createdAt: new Date().getTime() / 1000.0
+          db.collection("rooms")
+            .doc(state.room.id)
+            .collection("chat")
+            .add({
+              message: '4th : ' + user,
+              createdAtJapan: new Date(),
+              createdAt: new Date().getTime() / 1000.0 + 0.007,
+              username: 'SYSTEM_RANKINGS'
             })
-          })
         })
       })
     }

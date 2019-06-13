@@ -118,16 +118,16 @@ export default {
 
       // initializing room
       const room = {
-        users: [{ username: this.creator_name, role: "host", damage: 0 }],
-        events: [
-          // events have action and author properties
-          // action can be an object
-          {
-            action: "room created!",
-            author: this.creator_name,
-            createdAt: new Date().getTime()/1000.0
-          }
-        ]
+        users: [{ username: this.creator_name, role: "host", damage: 0 }]
+        // events: [
+        //   // events have action and author properties
+        //   // action can be an object
+        //   {
+        //     action: "room created!",
+        //     author: this.creator_name,
+        //     createdAt: new Date().getTime()/1000.0
+        //   }
+        // ]
       };
 
       // add room to firstore and update state.room
