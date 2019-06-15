@@ -2,10 +2,11 @@ import { db } from '@/main'
 import firebase from 'firebase'
 
 export default {
-  createRoom({ commit, dispatch, state }, room) {
+  createRoom ({ commit, dispatch, state }, payload) {
     // writing room information to db
     /* card objects have type and cardsLeft properties */
-
+    const room = payload.room
+    const secret_word =payload.secret_word
     // make list of card objects
     const cards = state.cardsType.map((type, typeIdx) => {
       return {
@@ -21,11 +22,31 @@ export default {
       .then(docRef => {
         /* saving the id of the room on firestore */
         room.id = docRef.id
-
+        console.log("secretwrod",secret_word)
         // commit room to state
         // commit('roomJoined', room)
         console.log('createRoom: roomID', room.id)
         dispatch('watchRoom', room.id)
+
+        db.collection("lists")
+        .doc("rooms")
+        .collection("list")
+          .add({
+          Room_ID: room.id,
+          secret_word: secret_word,
+          createdAtJapan: new Date(),
+          createdAt: new Date().getTime() / 1000.0
+          })
+          .then(function(docRef) {
+            console.log("Room list written with ID: ", docRef.id);
+          })
+          .catch(function(error) {
+            console.error("Error adding room list: ", error);
+          });
+
+
+        // dispatch('addsecret_word',secret_word)
+        // dispatch('addList',room.id,secret_word)
 
         // also commit player on this client who is also the host
         // that is why he is indexed by 0
@@ -33,15 +54,32 @@ export default {
       })
   },
 
+  // addList ({commit, dispatch, state }, {roomId,secret_word}){
+  //   db.collection("lists")
+  //       .doc("rooms")
+  //       .collection("list")
+  //       .add({
+  //         Room_ID: roomId,
+  //         secret_word: secret_word,
+  //         createdAtJapan: new Date(),
+  //         createdAt: new Date().getTime() / 1000.0
+  //       })
+  //       .then(function(docRef) {
+  //         console.log("Room list written with ID: ", docRef.id);
+  //       })
+  //       .catch(function(error) {
+  //         console.error("Error adding room list: ", error);
+  //       });
+  // },
 
-  addUserToRoom({ commit, state, dispatch }, payload) {
+  addUserToRoom ({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
       // see firestore doc for details
       users: firebase.firestore.FieldValue.arrayUnion(payload.user)
     }).then(() => {
-      db.collection("rooms")
+      db.collection('rooms')
         .doc(state.room.id)
-        .collection("chat")
+        .collection('chat')
         .add({
           message: 'joined!',
           createdAtJapan: new Date(),
@@ -52,7 +90,7 @@ export default {
     commit('userLogedIn', payload.user)
   },
 
-  watchRoom({ commit, state }, roomId) {
+  watchRoom ({ commit, state }, roomId) {
     // TODO: maybe better to have events stored in subcollection
     // that could be watched seperately
 
@@ -64,7 +102,7 @@ export default {
       })
   },
 
-  resetCards({ commit, state }) {
+  resetCards ({ commit, state }) {
     /* Set the cards to their initial state in db */
     const cards = state.cardsType.map((type, typeIdx) => {
       return {
@@ -85,9 +123,9 @@ export default {
     })
       .then(() => {
         console.log('cards successfuly reset')
-        db.collection("rooms")
+        db.collection('rooms')
           .doc(state.room.id)
-          .collection("chat")
+          .collection('chat')
           .add({
             message: 'GAME START!',
             createdAtJapan: new Date(),
@@ -98,7 +136,7 @@ export default {
       .catch((err) => console.error(err))
   },
 
-  drawCards({ commit, state }, cards) {
+  drawCards ({ commit, state }, cards) {
     /* Only called from `host`.
     *
     * Assign a currentCard property to each user.
@@ -145,9 +183,9 @@ export default {
       // NOTE: state is updated when db is updated
       .then(() => {
         console.log('users have drawn cards')
-        db.collection("rooms")
+        db.collection('rooms')
           .doc(state.room.id)
-          .collection("chat")
+          .collection('chat')
           .add({
             message: 'NEW ROUND',
             createdAtJapan: new Date(),
@@ -157,7 +195,7 @@ export default {
       })
   },
 
-  preprocessing({ commit, dispatch, state }, cards) {
+  preprocessing ({ commit, dispatch, state }, cards) {
     // decide who is first turn
     db.collection('rooms').doc(state.room.id).update({
       currentTurnIdx: Math.floor(Math.random() * state.room.users.length),
@@ -174,7 +212,7 @@ export default {
       })
   },
 
-  call({ commit, state }, { attempt, username }) {
+  call ({ commit, state }, { attempt, username }) {
     // set last called number from textbox in PrairieDogPlauRoom.vue
     state.room.lastCalledNumber = attempt
 
@@ -192,20 +230,19 @@ export default {
       lastCalledNumber: state.room.lastCalledNumber
     })
       .then(() => {
-        db.collection("rooms")
+        db.collection('rooms')
           .doc(state.room.id)
-          .collection("chat")
+          .collection('chat')
           .add({
             message: 'called ' + state.room.lastCalledNumber,
             createdAtJapan: new Date(),
             createdAt: new Date().getTime() / 1000.0,
             username: username
           })
-    })
+      })
   },
 
-  callPrairieDog({ commit, state }, username) {
-
+  callPrairieDog ({ commit, state }, username) {
     var multiplier = 0
     var max = -1000000
     var total = 0
@@ -232,23 +269,23 @@ export default {
         state.room.users[i].currentCard = currentCard
 
         // update db
-        state.room.remaining--;
+        state.room.remaining--
         db.collection('rooms').doc(state.room.id).update({
           users: state.room.users,
           cards: state.room.cards,
-          remaining: state.room.remaining,
+          remaining: state.room.remaining
         })
           .then(() => {
-            db.collection("rooms")
+            db.collection('rooms')
               .doc(state.room.id)
-              .collection("chat")
+              .collection('chat')
               .add({
                 message: '[?] → [' + currentCard + ']',
                 createdAtJapan: new Date(),
                 createdAt: new Date().getTime() / 1000.0,
                 username: 'SYSTEM_ADMINISTRATOR'
               })
-        })
+          })
       }
     }
 
@@ -284,18 +321,18 @@ export default {
     /* damage */
     let turnIdx = state.room.currentTurnIdx
     if (state.room.lastCalledNumber > total) {
-      db.collection("rooms")
+      db.collection('rooms')
         .doc(state.room.id)
-        .collection("chat")
+        .collection('chat')
         .add({
           message: 'Prairie Dog!',
           createdAtJapan: new Date(),
           createdAt: new Date().getTime() / 1000.0,
           username: username
         }).then(() => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: total + ' ＜ ' + state.room.lastCalledNumber,
               createdAtJapan: new Date(),
@@ -303,9 +340,9 @@ export default {
               username: 'SYSTEM_TOTAL'
             })
         }).then(() => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: 'Prairie Dog is SUCCEED!',
               createdAtJapan: new Date(),
@@ -313,24 +350,24 @@ export default {
               username: 'SYSTEM_ADMINISTRATOR'
             })
         })
-      
+
       if (turnIdx === 0) {
         turnIdx = state.room.users.length
       }
       turnIdx--
     } else {
-      db.collection("rooms")
+      db.collection('rooms')
         .doc(state.room.id)
-        .collection("chat")
+        .collection('chat')
         .add({
           message: 'Prairie Dog!',
           createdAtJapan: new Date(),
           createdAt: new Date().getTime() / 1000.0,
           username: username
         }).then(() => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: total + ' ≧ ' + state.room.lastCalledNumber,
               createdAtJapan: new Date(),
@@ -338,23 +375,23 @@ export default {
               username: 'SYSTEM_TOTAL'
             })
         }).then(() => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: 'Prairie Dog is FAILED!',
               createdAtJapan: new Date(),
               createdAt: new Date().getTime() / 1000.0 + 0.002,
               username: 'SYSTEM_ADMINISTRATOR'
             })
-      })
+        })
     }
     state.room.users[turnIdx].damage++
 
     if (state.room.remaining > state.room.users.length) {
       db.collection('rooms').doc(state.room.id).update({
         users: state.room.users,
-        isPrairieDogCalled: true,
+        isPrairieDogCalled: true
       })
     } else {
       var firstPlace = []
@@ -363,7 +400,7 @@ export default {
       var fourthPlace = []
       var damages = state.room.users.map(user => user.damage)
       damages.sort((a, b) => { return a - b })
-      damages = damages.filter((x, i, self) => self.indexOf(x) === i);
+      damages = damages.filter((x, i, self) => self.indexOf(x) === i)
 
       for (var i = 0; i < state.room.users.length; i++) {
         if (state.room.users[i].damage === damages[0]) {
@@ -394,9 +431,9 @@ export default {
         gameOver: true,
         previousCards: state.room.cards.slice()
       }).then(() => {
-        db.collection("rooms")
+        db.collection('rooms')
           .doc(state.room.id)
-          .collection("chat")
+          .collection('chat')
           .add({
             message: 'GAME OVER!',
             createdAtJapan: new Date(),
@@ -405,9 +442,9 @@ export default {
           })
       }).then(() => {
         firstPlace.forEach(user => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: '1st : ' + user,
               createdAtJapan: new Date(),
@@ -417,9 +454,9 @@ export default {
         })
       }).then(() => {
         secondPlace.forEach(user => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: '2nd : ' + user,
               createdAtJapan: new Date(),
@@ -429,9 +466,9 @@ export default {
         })
       }).then(() => {
         thirdPlace.forEach(user => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: '3rd : ' + user,
               createdAtJapan: new Date(),
@@ -441,9 +478,9 @@ export default {
         })
       }).then(() => {
         fourthPlace.forEach(user => {
-          db.collection("rooms")
+          db.collection('rooms')
             .doc(state.room.id)
-            .collection("chat")
+            .collection('chat')
             .add({
               message: '4th : ' + user,
               createdAtJapan: new Date(),
@@ -455,7 +492,7 @@ export default {
     }
   },
 
-  nextRound({ commit, dispatch, state }) {
+  nextRound ({ commit, dispatch, state }) {
     db.collection('rooms').doc(state.room.id).update({
       previousCards: state.room.cards.slice()
     })
@@ -465,7 +502,7 @@ export default {
       })
   },
 
-  destroyRoom({ commit, state }) {
+  destroyRoom ({ commit, state }) {
     db.collection('rooms').doc(state.room.id).delete().then(() => {
       // history.back(-1)
     })
@@ -474,7 +511,8 @@ export default {
       })
   },
 
-  brokeRoom({ commit, state }) {
+  brokeRoom ({ commit, state }) {
+    console.log("action.js addseecret_word")
     db.collection('rooms').doc(state.room.id).update({
       roombroke: true
     }).then(() => {
@@ -483,6 +521,17 @@ export default {
       .catch((err) => {
         console.error(err)
       })
+  },
 
-  }
+  // addsecret_word ({ commit, state },secret_word) {
+  //   console.log("action.js addseecret_word")
+  //   db.collection('rooms').doc(state.room.id).update({
+  //     secret_word: secret_word
+  //   }).then(() => {
+      
+  //   })
+  //     .catch((err) => {
+  //       console.error(err)
+  //     })
+  // }
 }

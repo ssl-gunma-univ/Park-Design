@@ -7,7 +7,7 @@ import mutations from './mutations'
 import getters from './getters'
 
 /* veux plugin */
-import createPersistedState from "vuex-persistedstate";
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -20,11 +20,10 @@ const initialState = {
   cardsType: ['-10', '-5', '0', '1', '2', '3', '4', '5', '10', '15', '20', '×2', 'MAX → 0', '?']
 }
 
-
 export default new Vuex.Store({
   state,
   mutations,
   actions,
   getters,
-  plugins: [createPersistedState({storage: window.sessionStorage})]
+  plugins: [createPersistedState({ storage: window.sessionStorage })]
 })

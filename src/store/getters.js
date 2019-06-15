@@ -70,7 +70,7 @@ export default {
     return state.room.events
   },
 
-  roombroke(state) {
+  roombroke (state) {
     return state.room.roombroke
   }
 }

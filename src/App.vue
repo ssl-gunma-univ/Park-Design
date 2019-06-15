@@ -15,7 +15,7 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      isPlayroom: false,
+      isPlayroom: false
     }
   },
   components: {
@@ -24,7 +24,7 @@ export default {
   },
   watch: {
     '$route': function (to, from) {
-      if(to.name === 'prairiedogplayroom') {
+      if (to.name === 'prairiedogplayroom') {
         this.isPlayroom = true
       } else {
         this.isPlayroom = false

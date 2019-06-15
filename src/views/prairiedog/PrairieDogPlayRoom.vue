@@ -42,7 +42,8 @@
           <div class="row mb-2">
             <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow">
               <h3>waiting for other players</h3>
-              <p>Your room ID is {{ room.id }}</p>
+              <!-- <p>Your room ID is {{ room.id }}</p> -->
+              <p>Secret word is {{ secret_word }}</p>
             </div>
 
             <div class="col-md-6 col-lg-4">
@@ -331,29 +332,30 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import { db } from "@/main";
+import { mapState, mapGetters } from 'vuex'
+import { db } from '@/main'
 
 export default {
-  data() {
+  data () {
     return {
-      attempt: "",
+      attempt: '',
       loading: false,
       // comments: [],
-      message: "",
+      message: '',
       messages: [],
-      roomid: ""
+      roomid: '',
+      secret_word: ''
       // roombroke: false
-    };
+    }
   },
 
   watch: {
     // この関数は question が変わるごとに実行されます。
-    roombroke: function(newQuestion, oldQuestion) {
+    roombroke: function (newQuestion, oldQuestion) {
       // this.answer = 'Waiting for you to stop typing...'
-      this.doquitroom();
+      this.doquitroom()
       if (this.roombroke != true) {
-        this.fetchMessage();
+        this.fetchMessage()
       }
     }
   },
@@ -371,101 +373,101 @@ export default {
   }, */
 
   computed: {
-    ...mapState(["me", "room", "cardsType"]),
+    ...mapState(['me', 'room', 'cardsType']),
     ...mapGetters([
-      "myIndexInRoom",
-      "userleft",
-      "usertop",
-      "userright",
-      "nplayers",
-      "currentTurnIdx",
-      "lastNum",
-      "playing",
-      "isPrairieDogCalled",
-      "gameOver",
-      "cardsLeft",
-      "previousCardsLeft",
-      "events",
+      'myIndexInRoom',
+      'userleft',
+      'usertop',
+      'userright',
+      'nplayers',
+      'currentTurnIdx',
+      'lastNum',
+      'playing',
+      'isPrairieDogCalled',
+      'gameOver',
+      'cardsLeft',
+      'previousCardsLeft',
+      'events',
       /*  */
-      "roombroke"
+      'roombroke'
     ])
   },
   methods: {
-    getUsername(index) {
+    getUsername (index) {
       if (index !== undefined) {
-        return this.room.users[index].username;
+        return this.room.users[index].username
       }
     },
 
-    getMyCard() {
+    getMyCard () {
       if (this.room.users[this.myIndexInRoom].currentCard !== undefined) {
-        return this.room.users[this.myIndexInRoom].currentCard;
+        return this.room.users[this.myIndexInRoom].currentCard
       }
     },
 
-    getMyDamage() {
+    getMyDamage () {
       if (this.room.users[this.myIndexInRoom] !== undefined && this.room.users[this.myIndexInRoom].damage !== undefined) {
-        return this.room.users[this.myIndexInRoom].damage;
+        return this.room.users[this.myIndexInRoom].damage
       }
     },
 
-    call() {
+    call () {
       if (parseInt(this.attempt) <= parseInt(this.lastNum)) {
-        const jsFrame = new JSFrame();
+        const jsFrame = new JSFrame()
         jsFrame.showToast({
-          html: "The number is upper than last called number.",
+          html: 'The number is upper than last called number.',
           duration: 2000
-        });
-        return;
+        })
+        return
       }
 
-      this.$store.dispatch("call", {
+      this.$store.dispatch('call', {
         attempt: parseInt(this.attempt),
         username: this.room.users[this.myIndexInRoom].username
-      });
+      })
 
       // reset the textbox after called
-      this.attempt = "";
+      this.attempt = ''
     },
 
-    callPrairieDog() {
-      this.attempt = "";
+    callPrairieDog () {
+      this.attempt = ''
       this.$store.dispatch(
-        "callPrairieDog",
+        'callPrairieDog',
         this.room.users[this.myIndexInRoom].username
-      );
+      )
     },
 
-    gameStart() {
-      this.$store.dispatch("resetCards");
-      this.loading = true;
+    gameStart () {
+      this.$store.dispatch('resetCards')
+      this.loading = true
       setTimeout(() => {
-        this.$store.dispatch("preprocessing", this.cardsLeft);
-      }, 1000);
+        this.$store.dispatch('preprocessing', this.cardsLeft)
+      }, 1000)
       setTimeout(() => {
-        this.loading = false;
-      }, 1100);
+        this.loading = false
+      }, 1100)
     },
 
-    destroyRoom() {
-      console.log("the room has been removed");
+    destroyRoom () {
+      console.log('the room has been removed')
       // this.room.roombroke = true;
-      this.$store.dispatch("brokeRoom");
+      this.$store.dispatch('brokeRoom')
       // this.roombroke = this.room.roombroke;
       // this.doquitroom();
-      this.$store.dispatch("destroyRoom");
+      this.$store.dispatch('destroyRoom')
     },
 
-    nextRound() {
-      this.$store.dispatch("nextRound");
+    nextRound () {
+      this.$store.dispatch('nextRound')
     },
 
-    resetCards() {
+    resetCards () {
       /* method called only by user with role `host` */
-      this.$store.dispatch("resetCards");
+      this.$store.dispatch('resetCards')
     },
 
-    saveMessage() {
+    saveMessage () {
       // save to firestore
       if (this.message.length != 0 && !this.roombroke) {
         /* this.$firestoreRefs.chat.add({
@@ -474,22 +476,22 @@ export default {
           username: this.me.username
         }); */
 
-        db.collection("rooms")
+        db.collection('rooms')
           .doc(`${this.roomid}`)
-          .collection("chat")
+          .collection('chat')
           .add({
             message: this.message,
             createdAtJapan: new Date(),
             createdAt: this.timestamp(),
             username: this.me.username
           })
-          .then(function(docRef) {
+          .then(function (docRef) {
             // console.log("Document written with ID: ", docRef.id);
           })
-          .catch(function(error) {
-            console.error("Error adding document: ", error);
-          });
-        this.message = "";
+          .catch(function (error) {
+            console.error('Error adding document: ', error)
+          })
+        this.message = ''
       }
 
       // db.collection("chat")
@@ -499,106 +501,146 @@ export default {
       // this.$firestoreRefs.selectedCity.delete();
     },
 
-    fetchMessage() {
-      db.collection("rooms")
+    fetchMessage () {
+      db.collection('rooms')
         .doc(`${this.roomid}`)
-        .collection("chat")
-        .orderBy("createdAt")
+        .collection('chat')
+        .orderBy('createdAt')
         /* .get()
-        .then(querySnapshot => {      //realtime*/
+        .then(querySnapshot => {      //realtime */
         .onSnapshot(querySnapshot => {
           /* realtime */
-          let allMessages = [];
+          let allMessages = []
           // let allDocid = [];
           querySnapshot.forEach(doc => {
-            allMessages.push(doc.data());
+            allMessages.push(doc.data())
             // allDocid.push(doc.id);
-            console.log(`${doc.id} => ${doc.data()}`);
+            console.log(`${doc.id} => ${doc.data()}`)
             // this.allDocid = `${doc.id}`
-          });
+          })
           // querySnapshot.forEach(doc => {
           //   allDocid.push(doc.id);
 
           // });
 
           // this.docid = allDocid;
-          this.messages = allMessages;
+          this.messages = allMessages
           // console.log(this.docid[3]);
-        });
+        })
     },
 
-    getroomid() {
-      this.roomid = this.$route.params.roomId;
+    getroomid () {
+      this.roomid = this.$route.params.roomId
       // this.roomid = this.room.id;
     },
 
-    displayTime: function(message) {
-      let timestamp = message.createdAt * 1000;
-      var date = new Date(timestamp);
-      var diff = new Date().getTime() - date.getTime();
-      var d = new Date(diff);
+    displayTime: function (message) {
+      let timestamp = message.createdAt * 1000
+      var date = new Date(timestamp)
+      var diff = new Date().getTime() - date.getTime()
+      var d = new Date(diff)
 
       if (d.getUTCFullYear() - 1970) {
         // return d.getUTCFullYear() - 1970 + "年前";
-        return "1秒前";
+        return '1秒前'
       } else if (d.getUTCMonth()) {
-        return d.getUTCMonth() + "ヶ月前";
+        return d.getUTCMonth() + 'ヶ月前'
       } else if (d.getUTCDate() - 1) {
-        return d.getUTCDate() - 1 + "日前";
+        return d.getUTCDate() - 1 + '日前'
       } else if (d.getUTCHours()) {
-        return d.getUTCHours() + "時間前";
+        return d.getUTCHours() + '時間前'
       } else if (d.getUTCMinutes()) {
-        return d.getUTCMinutes() + "分前";
+        return d.getUTCMinutes() + '分前'
       } else {
-        return d.getUTCSeconds() + "秒前";
+        return d.getUTCSeconds() + '秒前'
       }
     },
 
-    timestamp: function() {
-      let date = new Date();
-      let timestamp = date.getTime();
-      return Math.floor(timestamp / 1000);
+    timestamp: function () {
+      let date = new Date()
+      let timestamp = date.getTime()
+      return Math.floor(timestamp / 1000)
     },
 
-    doquitroom() {
+    doquitroom () {
       if (this.roombroke == true) {
-        console.log("doQuitRoom was executed");
-        alert("部屋が解散されました。");
-        history.back(-1);
+        console.log('doQuitRoom was executed')
+        // alert('部屋が解散されました。')
+        // alert('See you late. The room has been removed by host.')
+
+        const jsFrame2 = new JSFrame();
+
+        jsFrame2.showToast({
+          width: 260, //幅
+          height: 100, //高さ
+          duration: 5000, //表示時間(millis)
+          align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+          style: {
+            borderRadius: "2px",
+            // backgroundColor: "rgba(0,124,255,0.8)"
+            backgroundColor: "rgba(255,0,0,0.8)"
+          },
+          html:
+            '<span style="color:white;">See you late. The room has been removed by host.</span>',
+          closeButton: true, //閉じるボタンを表示
+          closeButtonColor: "white" //閉じるボタンの色
+        });
+        history.back(-1)
         // location.reload();
       }
+    },
+
+    search_room: function() {
+      
+      db.collection('lists')
+      .doc('rooms')
+      .collection('list')
+      .where("Room_ID", "==", `${this.room.id}` )
+      .orderBy('createdAt','desc')
+      .limit(1)
+      .get().then((snapshot) => {
+        snapshot.docs.forEach(doc => {
+          // room_id.push(doc.data().Room_ID)
+          console.log(doc.data().secret_word)
+          this.secret_word=doc.data().secret_word
+        })
+      })
+      
     }
   },
 
-  created() {
+  created () {
     // TODO: check if roomId is in localstorage here
     // console.log("created");
-    this.$store.dispatch("watchRoom", this.$route.params.roomId);
-    this.getroomid();
+    this.$store.dispatch('watchRoom', this.$route.params.roomId)
+    this.getroomid()
     if (this.roombroke != true) {
-      this.fetchMessage();
+      this.fetchMessage()
+    }
+    if (this.nplayers ==1){
+      this.search_room()
     }
   },
 
-  mounted() {
-    console.log("mounted");
+  mounted () {
+    console.log('mounted')
     // if (this.roombroke != true) {
     // this.fetchMessage();
     // }
     document.onscroll = e => {
       this.position =
-        document.documentElement.scrollTop || document.body.scrollTop;
-    };
+        document.documentElement.scrollTop || document.body.scrollTop
+    }
   }
 
   // updated() {
-    // this.roombroke = this.room.roombroke;
+  // this.roombroke = this.room.roombroke;
   //   // console.log("updated");
   //   // this.doquitroom();
   // },
 
   // beforeUpdate() {}
-};
+}
 </script>
 
 <style>
