@@ -1,21 +1,19 @@
 <template>
   <main class="container shadow bg-white pb-5">
     <div class="jumbotron">
-      <h1>プレーリードッグ</h1>
+      <h2>プレーリードッグ</h2>
       <hr>
-      <h2>ルール</h2>
-      <ul>
-        <li>前の人よりも「大きい数字」を宣言</li>
-        <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
-      </ul>
+      <h3>ルール</h3>
+        1. 前の人よりも「大きい数字」を宣言<br>
+        2. 前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言
       <div class="clearfix">
         <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-sm-12 col-lg-6 p-5">
-        <form class="form-signin card p-5">
+      <div class="col-sm-12 col-lg-6 p-1">
+        <form class="form-signin card px-2 py-5">
           <div class="text-center">
             <h1 class="h3 mb-3 font-weight-normal">Create a Room here</h1>
             <p>Enter Secret word and Username</p>
@@ -52,8 +50,8 @@
         </form>
       </div>
 
-      <div class="col-sm-12 col-lg-6 p-5">
-        <form class="form-signin card p-5">
+      <div class="col-sm-12 col-lg-6 p-1">
+        <form class="form-signin card px-2 py-5">
           <div class="text-center">
             <h1 class="h3 mb-3 font-weight-normal">Join a Room here</h1>
             <p>Enter Secret word and Username</p>
@@ -116,10 +114,7 @@ export default {
     ...mapState([
       'rooms',
       'room' // always update when state changes
-    ]),
-    isSmartPhone: function () {
-      return isMobile.phone
-    }
+    ])
   },
   watch: {
     room: function (oldRoom, newRoom) {
@@ -178,7 +173,7 @@ export default {
 
       // navigate to playroom
       this.$router.push({
-        name: 'prairiedogplayroom',
+        name: 'prairiedogmobileplayroom',
         params: { roomId: roomId }
       })
     },
@@ -199,13 +194,6 @@ export default {
         })
       })
       
-    }
-  },
-
-  created () {
-    // navigate to mobile page if smartphone is used.
-    if(this.isSmartPhone) {
-      this.$router.push('prairie-dog-mobile')
     }
   }
 }

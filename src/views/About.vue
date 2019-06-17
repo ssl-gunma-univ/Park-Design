@@ -24,13 +24,6 @@
 </template>
 
 <style>
-/* Links */
-a,
-a:focus,
-a:hover {
-  color: #fff;
-}
-
 /*
  * Base structure
  */

@@ -262,19 +262,21 @@
                 <div class="clearfix">
 
                 <span v-if="message.username === 'SYSTEM_ADMINISTRATOR'" class="text-info">
-                    <b>SYSTEM</b>
-                    : {{ message.message }}
-                </span>
-                <span v-else-if="message.username === 'SYSTEM_TOTAL'" class="text-primary">
-                  <b>TOTAL</b>
+                  <b>SYSTEM</b>
                   : {{ message.message }}
+                </span>
+                <span v-else-if="message.username === 'SYSTEM_SUCCESS'" class="text-primary">
+                  <b>{{ message.message }}</b>
+                </span>
+                <span v-else-if="message.username === 'SYSTEM_FAILURE'" class="text-danger">
+                  <b>{{ message.message }}</b>
                 </span>
                 <span v-else-if="message.username === 'SYSTEM_RANKINGS'" class="text-muted">
                   <b>{{ message.message }}</b>
                 </span>
                 <span v-else>
-                    <b>{{message.username}}</b>
-                    : {{message.message}}
+                  <b>{{message.username}}</b>
+                  : {{message.message}}
                 </span>
 
                 <small class="text-muted float-right">({{displayTime(message)}})</small>
@@ -299,6 +301,14 @@
             </div>
           </div>
           <div class="card-footer bg-dark text-white">
+            <div class="d-flex justify-content-center">
+              <button
+                type="button"
+                class="btn btn-warning mb-3"
+                @click="callPrairieDog"
+                :disabled="myIndexInRoom != currentTurnIdx || lastNum == undefined || isPrairieDogCalled"
+              >プレーリードッグ！</button>
+            </div>
             <form class="input-group" @submit.prevent="call">
               <input
                 v-model="attempt"
@@ -316,14 +326,7 @@
               </div>
             </form>
 
-            <div class="d-flex flex-row-reverse">
-              <button
-                type="button"
-                class="btn btn-warning mt-3"
-                @click="callPrairieDog"
-                :disabled="myIndexInRoom != currentTurnIdx || lastNum == undefined || isPrairieDogCalled"
-              >プレーリードッグ！</button>
-            </div>
+            
           </div>
         </div>
       </aside>
@@ -413,10 +416,20 @@ export default {
 
     call () {
       if (parseInt(this.attempt) <= parseInt(this.lastNum)) {
-        const jsFrame = new JSFrame()
+        const jsFrame = new JSFrame();
         jsFrame.showToast({
-          html: 'The number is upper than last called number.',
-          duration: 2000
+          width: 500, //幅
+          height: 200, //高さ
+          duration: 2000, //表示時間(millis)
+          align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+          style: {
+            borderRadius: "2px",
+            backgroundColor: "rgba(255,0,0,0.9)"
+          },
+          html:
+            '<span style="color:white;">数字宣言は前のプレイヤーよりも大きい数字で行ってください！</span>',
+          closeButton: true, //閉じるボタンを表示
+          closeButtonColor: "white" //閉じるボタンの色
         })
         return
       }

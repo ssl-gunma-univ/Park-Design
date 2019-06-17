@@ -334,20 +334,10 @@ export default {
             .doc(state.room.id)
             .collection('chat')
             .add({
-              message: total + ' ＜ ' + state.room.lastCalledNumber,
+              message: 'プレーリードッグ成功！（合計：' + total + '）',
               createdAtJapan: new Date(),
               createdAt: new Date().getTime() / 1000.0 + 0.001,
-              username: 'SYSTEM_TOTAL'
-            })
-        }).then(() => {
-          db.collection('rooms')
-            .doc(state.room.id)
-            .collection('chat')
-            .add({
-              message: 'Prairie Dog is SUCCEED!',
-              createdAtJapan: new Date(),
-              createdAt: new Date().getTime() / 1000.0 + 0.002,
-              username: 'SYSTEM_ADMINISTRATOR'
+              username: 'SYSTEM_SUCCESS'
             })
         })
 
@@ -369,20 +359,10 @@ export default {
             .doc(state.room.id)
             .collection('chat')
             .add({
-              message: total + ' ≧ ' + state.room.lastCalledNumber,
+              message: 'プレーリードッグ失敗！（合計：' + total +'）',
               createdAtJapan: new Date(),
               createdAt: new Date().getTime() / 1000.0 + 0.001,
-              username: 'SYSTEM_TOTAL'
-            })
-        }).then(() => {
-          db.collection('rooms')
-            .doc(state.room.id)
-            .collection('chat')
-            .add({
-              message: 'Prairie Dog is FAILED!',
-              createdAtJapan: new Date(),
-              createdAt: new Date().getTime() / 1000.0 + 0.002,
-              username: 'SYSTEM_ADMINISTRATOR'
+              username: 'SYSTEM_FAILURE'
             })
         })
     }

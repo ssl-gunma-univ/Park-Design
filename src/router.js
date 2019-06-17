@@ -3,7 +3,9 @@ import Router from 'vue-router'
 
 import Index from './views/Index.vue'
 import PrairieDogIndex from './views/prairiedog/PrairieDogIndex.vue'
+import PrairieDogMobileIndex from './views/prairiedog/PrairieDogMobileIndex.vue'
 import PrairieDogPlayRoom from './views/prairiedog/PrairieDogPlayRoom.vue'
+import PrairieDogMobilePlayRoom from './views/prairiedog/PrairieDogMobilePlayRoom.vue'
 import PrairieDogRules from './views/prairiedog/PrairieDogRules.vue'
 import About from './views/About.vue'
 
@@ -24,9 +26,19 @@ export default new Router({
       component: PrairieDogIndex
     },
     {
+      path: '/prairie-dog-mobile',
+      name: 'prairiedogmobile',
+      component: PrairieDogMobileIndex
+    },
+    {
       path: '/playroom/:roomId',
       name: 'prairiedogplayroom',
       component: PrairieDogPlayRoom
+    },
+    {
+      path: '/mobileplayroom/:roomId',
+      name: 'prairiedogmobileplayroom',
+      component: PrairieDogMobilePlayRoom
     },
     {
       path: '/prairie-dog/rules',
