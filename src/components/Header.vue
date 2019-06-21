@@ -10,8 +10,7 @@
           <b-nav-item href="/">Home</b-nav-item>
           <b-nav-item-dropdown text="Games" right>
             <b-dropdown-item href="/prairie-dog">プレーリードッグ</b-dropdown-item>
-            <b-dropdown-item href="#">あんにゃもんにゃ</b-dropdown-item>
-            <b-dropdown-item href="#">インディアンポーカー</b-dropdown-item>
+            <b-dropdown-item href="/anya-monya">あんにゃもんにゃ</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item href="#">Rules</b-dropdown-item>
           </b-nav-item-dropdown>

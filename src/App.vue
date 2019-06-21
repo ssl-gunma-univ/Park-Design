@@ -1,8 +1,12 @@
 <template>
   <div id="app">
-    <app-header v-if="! isPlayroom && this.$route.name !== 'prairiedogplayroom' && this.$route.name !== 'prairiedogmobileplayroom'"></app-header>
+    <app-header
+      v-if="! isPlayroom && this.$route.name !== 'prairiedogplayroom' && this.$route.name !== 'prairiedogmobileplayroom' && this.$route.name !== 'anyamonyaplayroom'">
+    </app-header>
     <router-view/>
-    <app-footer v-if="! isPlayroom && this.$route.name !== 'prairiedogplayroom' && this.$route.name !== 'prairiedogmobileplayroom' && this.$route.name !== 'about'"></app-footer>
+    <app-footer
+      v-if="! isPlayroom && this.$route.name !== 'prairiedogplayroom' && this.$route.name !== 'prairiedogmobileplayroom'  && this.$route.name !== 'anyamonyaplayroom' && this.$route.name !== 'about'">
+    </app-footer>
   </div>
 </template>
 
@@ -24,7 +28,7 @@ export default {
   },
   watch: {
     '$route': function (to, from) {
-      if (to.name === 'prairiedogplayroom' || to.name === 'prairiedogmobileplayroom') {
+      if (to.name === 'prairiedogplayroom' || to.name === 'prairiedogmobileplayroom' || to.name === 'anyamonyaplayroom') {
         this.isPlayroom = true
       } else {
         this.isPlayroom = false

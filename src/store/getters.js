@@ -72,5 +72,26 @@ export default {
 
   roombroke (state) {
     return state.room.roombroke
+  },
+
+  // あんにゃもんにゃ
+  deck (state) {
+    return state.room.deck
+  },
+
+  cardType (state) {
+    return state.room.cardType
+  },
+
+  named (state) {
+    return state.room.named
+  },
+
+  numberOfCardTypes(state) {
+    return state.numberOfCardTypes
+  },
+
+  numberOfEachCard(state) {
+    return state.numberOfEachCard
   }
 }

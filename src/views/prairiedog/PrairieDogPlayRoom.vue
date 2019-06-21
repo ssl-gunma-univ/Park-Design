@@ -20,12 +20,12 @@
                 >
                 <img
                   v-else-if="previousCardsLeft[index - 1].type === '?'"
-                  class="w-100 img-thumbnail shadow"
+                  class="w-100 rounded shadow"
                   src="@/assets/PrairieDogCards/？.jpg"
                 >
                 <img
                   v-else
-                  class="w-100 img-thumbnail shadow"
+                  class="w-100 rounded shadow"
                   v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"
                 >
               </div>
@@ -60,12 +60,12 @@
                   >
                   <img
                     v-else-if="userleft.currentCard === '?'"
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
                   <img
                     v-else
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.jpg')"
                   >
                 </p>
@@ -87,12 +87,12 @@
                   >
                   <img
                     v-else-if="usertop.currentCard === '?'"
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
                   <img
                     v-else
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.jpg')"
                   >
                 </p>
@@ -114,12 +114,12 @@
                   >
                   <img
                     v-else-if="userright.currentCard === '?'"
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     src="@/assets/PrairieDogCards/？.jpg"
                   >
                   <img
                     v-else
-                    class="w-75 img-thumbnail shadow"
+                    class="w-75 rounded shadow"
                     v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.jpg')"
                   >
                 </p>
@@ -142,60 +142,243 @@
           </div>
 
           <div class="row">
-            <div class="d-xl-none w-1oo py-3 col-lg-4">
-              <b-button
-                v-b-modal.modal-scrollable
-                class="w-100 py-5"
-                style="font-size: 20px;"
-                variant="secondary"
-              >残りカード表示</b-button>
+            <div class="w-1oo col-lg-4">
+              <div class="w-1oo pb-3">
+                <b-button
+                  v-b-modal.modal-scrollable
+                  class="w-100 py-5"
+                  style="font-size: 20px;"
+                  variant="info"
+                >残りカード表示</b-button>
 
-              <b-modal
-                id="modal-scrollable"
-                scrollable
-                title="残りカード"
-                ok-only
-                ok-title="Close"
-                ok-variant="secondary"
-              >
-                <div class="row">
-                  <div
-                    v-for="index in 14"
-                    :key="index"
-                    v-bind:class="{ 'col-6': previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0 }"
-                  >
+                <b-modal
+                  id="modal-scrollable"
+                  scrollable
+                  title="残りカード"
+                  ok-only
+                  ok-title="Close"
+                  ok-variant="secondary"
+                >
+                  <div class="row">
                     <div
-                      v-if="previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0"
-                      class="row"
+                      v-for="index in 14"
+                      :key="index"
+                      v-bind:class="{ 'col-6': previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0 }"
                     >
-                      <div class="col-9">
-                        <img
-                          v-if="previousCardsLeft[index - 1].type === '?'"
-                          class="w-100 img-thumbnail shadow"
-                          src="@/assets/PrairieDogCards/？.jpg"
-                        >
-                        <img
-                          v-else
-                          class="w-100 img-thumbnail shadow"
-                          v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"
-                        >
+                      <div
+                        v-if="previousCardsLeft != undefined && previousCardsLeft[index - 1] != undefined && previousCardsLeft[index - 1].cardsLeft != 0"
+                        class="row"
+                      >
+                        <div class="col-9">
+                          <img
+                            v-if="previousCardsLeft[index - 1].type === '?'"
+                            class="w-100 rounded shadow"
+                            src="@/assets/PrairieDogCards/？.jpg"
+                          >
+                          <img
+                            v-else
+                            class="w-100 rounded shadow"
+                            v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"
+                          >
+                        </div>
+                        <h4
+                          class="my-auto col-3 d-flex justify-content-end"
+                        >×{{ previousCardsLeft[index - 1].cardsLeft }}</h4>
                       </div>
-                      <h4
-                        class="my-auto col-3 d-flex justify-content-end"
-                      >×{{ previousCardsLeft[index - 1].cardsLeft }}</h4>
                     </div>
                   </div>
-                </div>
-              </b-modal>
+                </b-modal>
+              </div>
+              <div class="w-1oo">
+                <b-button
+                  v-b-modal.rules
+                  class="w-100 py-5"
+                  style="font-size: 20px;"
+                  variant="info"
+                >ルール</b-button>
+
+                <b-modal id="rules" scrollable title="ルール" ok-only ok-title="Close" ok-variant="secondary">
+
+                  <div role="tablist">
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block href="#" v-b-toggle.accordion-0 variant="info">概要</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-0" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                          <b-card-text style="text-indent: 1em;">
+                            「プレーリードッグ」は，ハッタリと推理が勝負のカギを握る，心理戦ボードゲームです．
+                          </b-card-text>
+                          <b-card-text style="text-indent: 1em;">
+                            『場に出ている数字の合計値を予想する』ゲームですが，その一番の特徴は『自分の数字だけ見えない』ということです．
+                          </b-card-text>
+                          <b-card-text style="text-indent: 1em;">
+                            つまり「相手の見えている数字」と「自分の見えない数字」があり，その合計の数を推理します．
+                          </b-card-text>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block href="#" v-b-toggle.accordion-2 variant="info">手順</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                          <ol class="pl-3 mb-0">
+                            <li>数字や記号の書かれたカードが山札からプレイヤーに配られる</li>
+                            <li>このとき，各々は自分のカードを見ることができない</li>
+                            <li>ランダムに選ばれたプレイヤーからゲームがスタートする</li>
+                            <li>最初のプレイヤーは，自分以外の場のカードを見て，見えない自分のカードを考慮し，場のカードの合計値より少ないであろう数字を宣言する</li>
+                            <li>次のプレイヤーは，前のプレイヤーより大きい数字を宣言するか，前のプレイヤーの宣言した数字がすでに場のカードの合計値を超えたと思ったら，「プレーリードッグ」宣言をする</li>
+                            <li>数字を宣言した場合はゲームが続行し，次のプレイヤーのターンとなる</li>
+                            <li>
+                              「プレーリードッグ」宣言をした場合，全員が各々のカードを見ることができ，前のプレイヤーの宣言した数字が場のカードの合計値より大きかったらそのプレイヤーにダメージを与え，小さかったら「プレーリードッグ」宣言をしたプレイヤーにダメージが与えられる
+                            </li>
+                            <li>ゲームは山札の枚数がプレイヤーの人数未満になったときに終了し，その時点で受けたダメージの少ないプレイヤーから順に強いということになる</li>
+                          </ol>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block href="#" v-b-toggle.accordion-1 variant="info">カードの種類</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                          <b-card-text style="text-indent: 1em;">カードは14種類存在し，それぞれ枚数が決まっています．山札は合計で36枚になります．</b-card-text>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">-10</p>
+                            <p class="mt-3">1枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">-5</p>
+                            <p class="mt-3">2枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">0</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">1</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">2</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">3</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">4</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">5</p>
+                            <p class="mt-3">4枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">10</p>
+                            <p class="mt-3">3枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">15</p>
+                            <p class="mt-3">2枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">20</p>
+                            <p class="mt-3">1枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">×2</p>
+                            <p class="mt-3">1枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">MAX → 0</p>
+                            <p class="mt-3">1枚</p>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">?</p>
+                            <p class="mt-3">1枚</p>
+                          </div>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block href="#" v-b-toggle.accordion-3 variant="info">特殊カード</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                          <b-card-text style="text-indent: 1em;">
+                            これらのカードのうち，特殊な働きをするカードが3種類あります．「×2」「MAX → 0」「?」です．それぞれの効果は以下の通りです．
+                          </b-card-text>
+                          <table class="table table-striped border">
+                            <thead>
+                              <tr>
+                                <th scope="col">×2</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>場のカードの合計値を2倍する</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table class="table table-striped border">
+                            <thead>
+                              <tr>
+                                <th scope="col">MAX → 0</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>場のカードのうち，最も大きい値を持つカード1枚を0とする</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table class="table table-striped border">
+                            <thead>
+                              <tr>
+                                <th scope="col">?</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>「プレーリードッグ」宣言後，山札から1枚引き，そのカードと置き換わる<br>山札が0枚の場合は0となる</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+
+                    <b-card no-body class="mb-1">
+                      <b-card-header header-tag="header" class="p-1" role="tab">
+                        <b-button block href="#" v-b-toggle.accordion-4 variant="info">元ネタ</b-button>
+                      </b-card-header>
+                      <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel">
+                        <b-card-body>
+                          <b-card-text style="text-indent: 1em;">プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームです．</b-card-text>
+                        </b-card-body>
+                      </b-collapse>
+                    </b-card>
+                  </div>
+                </b-modal>
+              </div>
             </div>
 
             <div
-              class="offset-xl-4 col-lg-4 text-center rounded shadow"
+              class="col-lg-4 text-center rounded shadow"
               v-bind:class="{ turn: me.username === getUsername(currentTurnIdx), back: ! (me.username === getUsername(currentTurnIdx)), 'py-5': ! playing && ! gameOver}"
             >
               <h3>{{ me.username }}</h3>
               <p v-if="!isPrairieDogCalled && playing">
-                <img class="w-75 img-thumbnail shadow" src="@/assets/PrairieDogCards/card.jpg">
+                <img class="w-75 rounded shadow" src="@/assets/PrairieDogCards/card.jpg">
               </p>
               <p v-if="isPrairieDogCalled">
                 <img
@@ -204,12 +387,12 @@
                 >
                 <img
                   v-else-if="getMyCard() === '?'"
-                  class="w-75 img-thumbnail shadow"
+                  class="w-75 rounded shadow"
                   src="@/assets/PrairieDogCards/？.jpg"
                 >
                 <img
                   v-else
-                  class="w-75 img-thumbnail shadow"
+                  class="w-75 rounded shadow"
                   v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.jpg')"
                 >
               </p>

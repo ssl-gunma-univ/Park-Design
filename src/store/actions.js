@@ -54,6 +54,83 @@ export default {
       })
   },
 
+  createAnyamonyaRoom({ commit, dispatch, state }, payload) {
+    // writing room information to db
+    /* deckにはゲームに使用されるカードの種類と，それぞれの枚数が格納される
+       cardTypeはランダムに選ばれる． */
+    const room = payload.room
+    const secret_word = payload.secret_word
+
+    let deck = []
+
+    let cardType = []
+
+    // create a deck
+    var i
+    for (i = 0; i < state.numberOfCardTypes; i++) {
+      var random = Math.floor(Math.random() * 13)
+      if (cardType.indexOf(random) === -1) {
+        cardType[i] = random
+      } else {
+        i--
+      }
+    }
+    for (i = 0; i < state.numberOfCardTypes; i++) {
+      deck[i] = {
+        name: '',
+        namedBy: '',
+        rest: state.numberOfEachCard,
+        isCalled: false // 名前が当てられたらtrueに．次のカードをめくるとfalseに戻る
+      }
+    }
+
+    room.cardType = cardType // list of file names of card's image(jpeg).
+    room.deck = deck // a deck of cards. it is created by createDeck method. there are 5 same cards.
+    room.stack = 0 // a stack of cards
+    room.indexnum = -1 // どのカードがめくられたかのインデックス．
+    room.isKnownCard = false // 名づけ済みのカードが現れるとtrueに
+    room.playing = false // ゲーム開始でtrueに
+    room.isNextEnabled = true // ホストの次へのボタンが押せるかどうか．trueなら押せる
+    room.currentTurnIdx = 0 // 誰がめくる番かを保存．名前を付けた後あるいは名前を当てた後に次のターンに変わる
+    room.cardname = ''
+
+    db.collection('anyamonya_rooms').add(room)
+      .then(docRef => {
+        /* saving the id of the room on firestore */
+        room.id = docRef.id
+        console.log("secretwrod", secret_word)
+        // commit room to state
+        // commit('roomJoined', room)
+        console.log('createRoom: roomID', room.id)
+        dispatch('watchAnyamonyaRoom', room.id)
+
+        db.collection("lists")
+          .doc("anyamonya_rooms")
+          .collection("list")
+          .add({
+            Room_ID: room.id,
+            secret_word: secret_word,
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0
+          })
+          .then(function (docRef) {
+            console.log("Room list written with ID: ", docRef.id);
+          })
+          .catch(function (error) {
+            console.error("Error adding room list: ", error);
+          });
+
+
+        // dispatch('addsecret_word',secret_word)
+        // dispatch('addList',room.id,secret_word)
+
+        // also commit player on this client who is also the host
+        // that is why he is indexed by 0
+        commit('userLogedIn', room.users[0])
+      })
+  },
+  
+
   // addList ({commit, dispatch, state }, {roomId,secret_word}){
   //   db.collection("lists")
   //       .doc("rooms")
@@ -90,11 +167,41 @@ export default {
     commit('userLogedIn', payload.user)
   },
 
+  addUserToAnyamonyaRoom({ commit, state, dispatch }, payload) {
+    db.collection('anyamonya_rooms').doc(payload.roomId).update({
+      // see firestore doc for details
+      users: firebase.firestore.FieldValue.arrayUnion(payload.user)
+    }).then(() => {
+      db.collection('anyamonya_rooms')
+        .doc(state.room.id)
+        .collection('chat')
+        .add({
+          message: 'joined!',
+          createdAtJapan: new Date(),
+          createdAt: new Date().getTime() / 1000.0,
+          username: payload.user.username
+        })
+    })
+    commit('userLogedIn', payload.user)
+  },
+
   watchRoom ({ commit, state }, roomId) {
     // TODO: maybe better to have events stored in subcollection
     // that could be watched seperately
 
     db.collection('rooms').doc(roomId)
+      .onSnapshot(doc => {
+        let room = doc.data()
+        room.id = roomId
+        commit('roomJoined', room)
+      })
+  },
+
+  watchAnyamonyaRoom({ commit, state }, roomId) {
+    // TODO: maybe better to have events stored in subcollection
+    // that could be watched seperately
+
+    db.collection('anyamonya_rooms').doc(roomId)
       .onSnapshot(doc => {
         let room = doc.data()
         room.id = roomId

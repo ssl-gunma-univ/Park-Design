@@ -36,7 +36,8 @@
                 その人のセンスで特徴を捉えた名前を付け、全員で共有し、以降もし同じものがめくられたらその名前をいちタイプして、溜まったカードを獲得し、集めた枚数を競うゲームです。
               </p>
               <div class="clearfix">
-                <a href="#" class="btn btn-primary float-right disabled">Play</a>
+                <router-link v-if="isSmartPhone" to="/anya-monya" class="btn btn-primary float-right">Play</router-link>
+                <router-link v-else to="/anya-monya" class="btn btn-primary float-right">Play</router-link>
               </div>
             </div>
           </div>
