@@ -17,6 +17,7 @@ export default {
 
     room.cards = cards
     room.previousCards = cards
+    room.playing = false
 
     db.collection('rooms').add(room)
       .then(docRef => {

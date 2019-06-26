@@ -13,7 +13,6 @@
       <div class="clearfix">
         <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
       </div>
-      <router-link to="/anyamonyaplayroom" class="btn btn-primary">Play</router-link>
     </div>
 
     <div class="row">

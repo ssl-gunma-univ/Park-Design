@@ -166,25 +166,67 @@ export default {
       if (!roomId) {
         // the room has just been created in db
         roomId = this.room.id
+        // navigate to playroom
+        this.$router.push({
+          name: 'prairiedogplayroom',
+          params: { roomId: roomId }
+        })
       } else {
-        // user is trying to join an already created room
-        const user = {
-          username: this.joiner_name,
-          role: 'guest',
-          damage: 0
-        }
-        this.$store.dispatch('addUserToRoom', { roomId: roomId, user: user })
+        db.collection('rooms').doc(roomId).get({})
+        .then((doc) => {
+          if(doc.data().users.length >= 4) {
+            const jsFrame = new JSFrame();
+            jsFrame.showToast({
+              width: 500, //幅
+              height: 200, //高さ
+              duration: 2000, //表示時間(millis)
+              align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+              style: {
+                borderRadius: "2px",
+                backgroundColor: "rgba(255,0,0,0.9)"
+              },
+              html:
+                '<span style="color:white;">そのルームはすでに満員です！（4人まで）</span>',
+              closeButton: true, //閉じるボタンを表示
+              closeButtonColor: "white" //閉じるボタンの色
+            })
+            return
+          } else if (doc.data().playing) {
+            const jsFrame = new JSFrame();
+            jsFrame.showToast({
+              width: 500, //幅
+              height: 200, //高さ
+              duration: 2000, //表示時間(millis)
+              align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+              style: {
+                borderRadius: "2px",
+                backgroundColor: "rgba(255,0,0,0.9)"
+              },
+              html:
+                '<span style="color:white;">そのルームはすでにゲームが開始されています！</span>',
+              closeButton: true, //閉じるボタンを表示
+              closeButtonColor: "white" //閉じるボタンの色
+            })
+            return
+          } else {
+            // user is trying to join an already created room
+            const user = {
+              username: this.joiner_name,
+              role: 'guest',
+              damage: 0
+            }
+            this.$store.dispatch('addUserToRoom', { roomId: roomId, user: user })
+            // navigate to playroom
+            this.$router.push({
+              name: 'prairiedogplayroom',
+              params: { roomId: roomId }
+            })
+          }
+        })
       }
-
-      // navigate to playroom
-      this.$router.push({
-        name: 'prairiedogplayroom',
-        params: { roomId: roomId }
-      })
     },
 
     search_word: function() {
-      console.log("secret_word =",this.secret_word2)
       db.collection('lists')
       .doc('rooms')
       .collection('list')
@@ -193,8 +235,6 @@ export default {
       .limit(1)
       .get().then((snapshot) => {
         snapshot.docs.forEach(doc => {
-          // room_id.push(doc.data().Room_ID)
-          console.log(doc.data().Room_ID)
           this.joinRoom(doc.data().Room_ID)
         })
       })

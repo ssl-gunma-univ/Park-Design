@@ -400,8 +400,9 @@
         </b-modal>
       </div>
       <div class="col-4 border border-secondary p-0">
-        <b-button v-b-modal.logs variant="dark" class="w-100 pl-0">
+        <b-button v-b-modal.logs variant="dark" class="w-100 pl-0" @click="newMessage = false">
           <i class="fas fa-comments" style="font-size: 25px;"></i>
+          <span v-if="newMessage" style="position: absolute" class="badge badge-pill badge-danger float-right mt-1">New</span>
           <div style="font-size: 5px;">チャット・ログ</div>
         </b-button>
 
@@ -461,6 +462,7 @@ export default {
     return {
       attempt: '',
       loading: false,
+      newMessage: false,
       // comments: [],
       message: '',
       messages: [],
@@ -637,26 +639,17 @@ export default {
         .doc(`${this.roomid}`)
         .collection('chat')
         .orderBy('createdAt')
-        /* .get()
-        .then(querySnapshot => {      //realtime */
         .onSnapshot(querySnapshot => {
           /* realtime */
           let allMessages = []
-          // let allDocid = [];
           querySnapshot.forEach(doc => {
             allMessages.push(doc.data())
-            // allDocid.push(doc.id);
-            console.log(`${doc.id} => ${doc.data()}`)
-            // this.allDocid = `${doc.id}`
           })
-          // querySnapshot.forEach(doc => {
-          //   allDocid.push(doc.id);
-
-          // });
-
-          // this.docid = allDocid;
+          if(allMessages[allMessages.length - 1].username !== this.me.username) {
+            this.newMessage = true
+          }
+          console.log(allMessages)
           this.messages = allMessages
-          // console.log(this.docid[3]);
         })
     },
 

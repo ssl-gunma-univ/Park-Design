@@ -3,21 +3,23 @@
     <div class="jumbotron">
       <h1>Welcome to <img class="img-fluid" style="width: 399px; height: 57px" src="@/assets/logos/1.png"/></h1>
       <hr>
-      <h3>How to play games</h3>
+      <h3>遊び方</h3>
       <p>
-        There are some minor table games. Click a game you want to play. And create a room or join a room.<br>
+        下のゲーム一覧から，お好きなテーブルゲームをクリックしてください．合言葉(Secret word)を決めたら，一緒にプレイする友達に伝え，部屋を作成・参加しましょう．このサイトにあるゲームは，すべてマルチプレイです．外部ツールを使って，友達と通話しながらプレイすることをお勧めします．<br>
       </p>
     </div>
 
     <div class="row">
       <div class="col-md-6 col-lg-4 mb-3 px-0">
           <div class="card mx-auto" style="width: 90%;">
-            <img src="https://pbs.twimg.com/media/C84aGQhUAAANlqj.jpg:large" class="card-img-top" alt="prairie">
+            <img src="@/assets/Images/logo_prairie.png" class="card-img-top" alt="prairie">
             <div class="card-body">
               <h5 class="card-title font-weight-bold">プレーリードッグ</h5>
               <p class="card-text">
-                <strong>Prairie Dog</strong> is a simple bluffing game in a western setting. Every player gets a card
-                 showing a number of "hidden" Indians or a special value. You don't know the value of your card, but you can see all the others.
+                <strong>プレーリードッグ</strong>
+                  は，ハッタリと推理が勝負のカギを握る，心理戦ボードゲームです．
+                  『場に出ている数字の合計値を予想する』ゲームですが，その一番の特徴は『自分の数字だけ見えない』ということです．
+                  つまり「相手の見えている数字」と「自分の見えない数字」があり，その合計の数を推理します．
               </p>
               <div class="clearfix">
                 <router-link v-if="isSmartPhone" to="/prairie-dog-mobile" class="btn btn-primary float-right">Play</router-link>
@@ -32,8 +34,8 @@
             <div class="card-body">
               <h5 class="card-title font-weight-bold">あんにゃもんにゃ</h5>
               <p class="card-text">
-                <strong>あんにゃもんにゃ</strong>は、謎生物が描かれたカードが中央の場に次々とめくられるたびに、
-                その人のセンスで特徴を捉えた名前を付け、全員で共有し、以降もし同じものがめくられたらその名前をいちタイプして、溜まったカードを獲得し、集めた枚数を競うゲームです。
+                <strong>あんにゃもんにゃ</strong>は，謎生物が描かれたカードが中央の場に次々とめくられるたびに，
+                その人のセンスで特徴を捉えた名前を付け，全員で共有し，以降もし同じものがめくられたらその名前をいちタイプして，溜まったカードを獲得し，集めた枚数を競うゲームです．
               </p>
               <div class="clearfix">
                 <router-link v-if="isSmartPhone" to="/anya-monya" class="btn btn-primary float-right">Play</router-link>
