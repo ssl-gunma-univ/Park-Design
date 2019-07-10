@@ -173,9 +173,6 @@
       </div>
     </form>
 
-
-
-
     <div v-if="me.role == 'host'" class="text-center mback pb-4">
       <h4 class="text-white">GAME MENU</h4>
       <button @click="gameStart" :disabled="nplayers == 1 || playing || loading" type="button"
@@ -536,20 +533,20 @@ export default {
 
     call () {
       if (parseInt(this.attempt) <= parseInt(this.lastNum)) {
-        const jsFrame = new JSFrame();
+        const jsFrame = new JSFrame()
         jsFrame.showToast({
-          width: 260, //幅
-          height: 100, //高さ
-          duration: 2000, //表示時間(millis)
-          align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+          width: 260, // 幅
+          height: 100, // 高さ
+          duration: 2000, // 表示時間(millis)
+          align: 'center', // 表示位置 'top'/'center'/'bottom'(default)
           style: {
-            borderRadius: "2px",
-            backgroundColor: "rgba(255,0,0,0.9)"
+            borderRadius: '2px',
+            backgroundColor: 'rgba(255,0,0,0.9)'
           },
           html:
             '<span style="color:white;">数字宣言は前のプレイヤーよりも大きい数字で行ってください！</span>',
-          closeButton: true, //閉じるボタンを表示
-          closeButtonColor: "white" //閉じるボタンの色
+          closeButton: true, // 閉じるボタンを表示
+          closeButtonColor: 'white' // 閉じるボタンの色
         })
         return
       }
@@ -645,7 +642,7 @@ export default {
           querySnapshot.forEach(doc => {
             allMessages.push(doc.data())
           })
-          if(allMessages[allMessages.length - 1].username !== this.me.username) {
+          if (allMessages[allMessages.length - 1].username !== this.me.username) {
             this.newMessage = true
           }
           console.log(allMessages)
@@ -692,44 +689,42 @@ export default {
         // alert('部屋が解散されました。')
         // alert('See you late. The room has been removed by host.')
 
-        const jsFrame2 = new JSFrame();
+        const jsFrame2 = new JSFrame()
 
         jsFrame2.showToast({
-          width: 260, //幅
-          height: 100, //高さ
-          duration: 5000, //表示時間(millis)
-          align: "center", // 表示位置 'top'/'center'/'bottom'(default)
+          width: 260, // 幅
+          height: 100, // 高さ
+          duration: 5000, // 表示時間(millis)
+          align: 'center', // 表示位置 'top'/'center'/'bottom'(default)
           style: {
-            borderRadius: "2px",
+            borderRadius: '2px',
             // backgroundColor: "rgba(0,124,255,0.8)"
-            backgroundColor: "rgba(255,0,0,0.8)"
+            backgroundColor: 'rgba(255,0,0,0.8)'
           },
           html:
             '<span style="color:white;">See you late. The room has been removed by host.</span>',
-          closeButton: true, //閉じるボタンを表示
-          closeButtonColor: "white" //閉じるボタンの色
-        });
+          closeButton: true, // 閉じるボタンを表示
+          closeButtonColor: 'white' // 閉じるボタンの色
+        })
         history.back(-1)
         // location.reload();
       }
     },
 
-    search_room: function() {
-      
+    search_room: function () {
       db.collection('lists')
-      .doc('rooms')
-      .collection('list')
-      .where("Room_ID", "==", `${this.room.id}` )
-      .orderBy('createdAt','desc')
-      .limit(1)
-      .get().then((snapshot) => {
-        snapshot.docs.forEach(doc => {
+        .doc('rooms')
+        .collection('list')
+        .where('Room_ID', '==', `${this.room.id}`)
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .get().then((snapshot) => {
+          snapshot.docs.forEach(doc => {
           // room_id.push(doc.data().Room_ID)
-          console.log(doc.data().secret_word)
-          this.secret_word=doc.data().secret_word
+            console.log(doc.data().secret_word)
+            this.secret_word = doc.data().secret_word
+          })
         })
-      })
-      
     }
   },
 
@@ -741,7 +736,7 @@ export default {
     if (this.roombroke != true) {
       this.fetchMessage()
     }
-    if (this.nplayers ==1){
+    if (this.nplayers == 1) {
       this.search_room()
     }
   },

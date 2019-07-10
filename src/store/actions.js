@@ -6,7 +6,7 @@ export default {
     // writing room information to db
     /* card objects have type and cardsLeft properties */
     const room = payload.room
-    const secret_word =payload.secret_word
+    const secret_word = payload.secret_word
     // make list of card objects
     const cards = state.cardsType.map((type, typeIdx) => {
       return {
@@ -23,28 +23,27 @@ export default {
       .then(docRef => {
         /* saving the id of the room on firestore */
         room.id = docRef.id
-        console.log("secretwrod",secret_word)
+        console.log('secretwrod', secret_word)
         // commit room to state
         // commit('roomJoined', room)
         console.log('createRoom: roomID', room.id)
         dispatch('watchRoom', room.id)
 
-        db.collection("lists")
-        .doc("rooms")
-        .collection("list")
+        db.collection('lists')
+          .doc('rooms')
+          .collection('list')
           .add({
-          Room_ID: room.id,
-          secret_word: secret_word,
-          createdAtJapan: new Date(),
-          createdAt: new Date().getTime() / 1000.0
+            Room_ID: room.id,
+            secret_word: secret_word,
+            createdAtJapan: new Date(),
+            createdAt: new Date().getTime() / 1000.0
           })
-          .then(function(docRef) {
-            console.log("Room list written with ID: ", docRef.id);
+          .then(function (docRef) {
+            console.log('Room list written with ID: ', docRef.id)
           })
-          .catch(function(error) {
-            console.error("Error adding room list: ", error);
-          });
-
+          .catch(function (error) {
+            console.error('Error adding room list: ', error)
+          })
 
         // dispatch('addsecret_word',secret_word)
         // dispatch('addList',room.id,secret_word)
@@ -55,7 +54,7 @@ export default {
       })
   },
 
-  createAnyamonyaRoom({ commit, dispatch, state }, payload) {
+  createAnyamonyaRoom ({ commit, dispatch, state }, payload) {
     // writing room information to db
     /* deckにはゲームに使用されるカードの種類と，それぞれの枚数が格納される
        cardTypeはランダムに選ばれる． */
@@ -99,15 +98,15 @@ export default {
       .then(docRef => {
         /* saving the id of the room on firestore */
         room.id = docRef.id
-        console.log("secretwrod", secret_word)
+        console.log('secretwrod', secret_word)
         // commit room to state
         // commit('roomJoined', room)
         console.log('createRoom: roomID', room.id)
         dispatch('watchAnyamonyaRoom', room.id)
 
-        db.collection("lists")
-          .doc("anyamonya_rooms")
-          .collection("list")
+        db.collection('lists')
+          .doc('anyamonya_rooms')
+          .collection('list')
           .add({
             Room_ID: room.id,
             secret_word: secret_word,
@@ -115,12 +114,11 @@ export default {
             createdAt: new Date().getTime() / 1000.0
           })
           .then(function (docRef) {
-            console.log("Room list written with ID: ", docRef.id);
+            console.log('Room list written with ID: ', docRef.id)
           })
           .catch(function (error) {
-            console.error("Error adding room list: ", error);
-          });
-
+            console.error('Error adding room list: ', error)
+          })
 
         // dispatch('addsecret_word',secret_word)
         // dispatch('addList',room.id,secret_word)
@@ -130,7 +128,6 @@ export default {
         commit('userLogedIn', room.users[0])
       })
   },
-  
 
   // addList ({commit, dispatch, state }, {roomId,secret_word}){
   //   db.collection("lists")
@@ -168,7 +165,7 @@ export default {
     commit('userLogedIn', payload.user)
   },
 
-  addUserToAnyamonyaRoom({ commit, state, dispatch }, payload) {
+  addUserToAnyamonyaRoom ({ commit, state, dispatch }, payload) {
     db.collection('anyamonya_rooms').doc(payload.roomId).update({
       // see firestore doc for details
       users: firebase.firestore.FieldValue.arrayUnion(payload.user)
@@ -198,7 +195,7 @@ export default {
       })
   },
 
-  watchAnyamonyaRoom({ commit, state }, roomId) {
+  watchAnyamonyaRoom ({ commit, state }, roomId) {
     // TODO: maybe better to have events stored in subcollection
     // that could be watched seperately
 
@@ -467,7 +464,7 @@ export default {
             .doc(state.room.id)
             .collection('chat')
             .add({
-              message: 'プレーリードッグ失敗！（合計：' + total +'）',
+              message: 'プレーリードッグ失敗！（合計：' + total + '）',
               createdAtJapan: new Date(),
               createdAt: new Date().getTime() / 1000.0 + 0.001,
               username: 'SYSTEM_FAILURE'
@@ -590,17 +587,8 @@ export default {
       })
   },
 
-  destroyRoom ({ commit, state }) {
-    db.collection('rooms').doc(state.room.id).delete().then(() => {
-      // history.back(-1)
-    })
-      .catch((err) => {
-        console.error(err)
-      })
-  },
-
   brokeRoom ({ commit, state }) {
-    console.log("action.js addseecret_word")
+    console.log('action.js brokeRoom')
     db.collection('rooms').doc(state.room.id).update({
       roombroke: true
     }).then(() => {
@@ -611,12 +599,43 @@ export default {
       })
   },
 
+  destroyRoom ({ commit, state }) {
+    console.log('action.js destroyRoom')
+    db.collection('rooms').doc(state.room.id).delete().then(() => {
+      // history.back(-1)
+    })
+      .catch((err) => {
+        console.error(err)
+      })
+  },
+
+  brokeAnyamonyaRoom ({ commit, state }) {
+    console.log('action.js brokeRoom')
+    db.collection('anyamonya_rooms').doc(state.room.id).update({
+      roombroke: true
+    }).then(() => {
+      // history.back(-1)
+    })
+      .catch((err) => {
+        console.error(err)
+      })
+  },
+  destroyAnyamonyaRoom ({ commit, state }) {
+    console.log('action.js destroyRoom')
+    db.collection('anyamonya_rooms').doc(state.room.id).delete().then(() => {
+      // history.back(-1)
+    })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+
   // addsecret_word ({ commit, state },secret_word) {
   //   console.log("action.js addseecret_word")
   //   db.collection('rooms').doc(state.room.id).update({
   //     secret_word: secret_word
   //   }).then(() => {
-      
+
   //   })
   //     .catch((err) => {
   //       console.error(err)

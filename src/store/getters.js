@@ -87,11 +87,11 @@ export default {
     return state.room.named
   },
 
-  numberOfCardTypes(state) {
+  numberOfCardTypes (state) {
     return state.numberOfCardTypes
   },
 
-  numberOfEachCard(state) {
+  numberOfEachCard (state) {
     return state.numberOfEachCard
   }
 }

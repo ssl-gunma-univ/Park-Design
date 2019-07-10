@@ -92,6 +92,7 @@
         </form>
       </div>
     </div>
+    <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
   </main>
 </template>
 
@@ -144,10 +145,9 @@ export default {
 
       // add room to firstore and update state.room
       // and state.me
-      
+
       console.log('dispatching createRoom')
-      this.$store.dispatch('createAnyamonyaRoom', {room, secret_word})
-      
+      this.$store.dispatch('createAnyamonyaRoom', { room, secret_word })
     },
 
     joinRoom: function (roomId = false) {
@@ -175,23 +175,22 @@ export default {
       })
     },
 
-    search_word: function() {
-      console.log("secret_word =",this.secret_word2)
+    search_word: function () {
+      console.log('secret_word =', this.secret_word2)
       db.collection('lists')
-      .doc('anyamonya_rooms')
-      .collection('list')
-      .where("secret_word", "==", `${this.secret_word2}` )
-      .orderBy('createdAt','desc')
-      .limit(1)
-      .get().then((snapshot) => {
-        snapshot.docs.forEach(doc => {
+        .doc('anyamonya_rooms')
+        .collection('list')
+        .where('secret_word', '==', `${this.secret_word2}`)
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .get().then((snapshot) => {
+          snapshot.docs.forEach(doc => {
           // this.room.id = doc.data().Room_ID
           // room_id.push(doc.data().Room_ID)
-          console.log(doc.data().Room_ID)
-          this.joinRoom(doc.data().Room_ID)
-        })
-      }).catch((err) => console.error(err))
-      
+            console.log(doc.data().Room_ID)
+            this.joinRoom(doc.data().Room_ID)
+          })
+        }).catch((err) => console.error(err))
     }
   },
 

@@ -152,10 +152,9 @@ export default {
 
       // add room to firstore and update state.room
       // and state.me
-      
+
       console.log('dispatching createRoom')
-      this.$store.dispatch('createRoom', {room, secret_word})
-      
+      this.$store.dispatch('createRoom', { room, secret_word })
     },
 
     joinRoom: function (roomId = false) {
@@ -173,78 +172,75 @@ export default {
         })
       } else {
         db.collection('rooms').doc(roomId).get({})
-        .then((doc) => {
-          if(doc.data().users.length >= 4) {
-            const jsFrame = new JSFrame();
-            jsFrame.showToast({
-              width: 500, //幅
-              height: 200, //高さ
-              duration: 2000, //表示時間(millis)
-              align: "center", // 表示位置 'top'/'center'/'bottom'(default)
-              style: {
-                borderRadius: "2px",
-                backgroundColor: "rgba(255,0,0,0.9)"
-              },
-              html:
+          .then((doc) => {
+            if (doc.data().users.length >= 4) {
+              const jsFrame = new JSFrame()
+              jsFrame.showToast({
+                width: 500, // 幅
+                height: 200, // 高さ
+                duration: 2000, // 表示時間(millis)
+                align: 'center', // 表示位置 'top'/'center'/'bottom'(default)
+                style: {
+                  borderRadius: '2px',
+                  backgroundColor: 'rgba(255,0,0,0.9)'
+                },
+                html:
                 '<span style="color:white;">そのルームはすでに満員です！（4人まで）</span>',
-              closeButton: true, //閉じるボタンを表示
-              closeButtonColor: "white" //閉じるボタンの色
-            })
-            return
-          } else if (doc.data().playing) {
-            const jsFrame = new JSFrame();
-            jsFrame.showToast({
-              width: 500, //幅
-              height: 200, //高さ
-              duration: 2000, //表示時間(millis)
-              align: "center", // 表示位置 'top'/'center'/'bottom'(default)
-              style: {
-                borderRadius: "2px",
-                backgroundColor: "rgba(255,0,0,0.9)"
-              },
-              html:
+                closeButton: true, // 閉じるボタンを表示
+                closeButtonColor: 'white' // 閉じるボタンの色
+              })
+            } else if (doc.data().playing) {
+              const jsFrame = new JSFrame()
+              jsFrame.showToast({
+                width: 500, // 幅
+                height: 200, // 高さ
+                duration: 2000, // 表示時間(millis)
+                align: 'center', // 表示位置 'top'/'center'/'bottom'(default)
+                style: {
+                  borderRadius: '2px',
+                  backgroundColor: 'rgba(255,0,0,0.9)'
+                },
+                html:
                 '<span style="color:white;">そのルームはすでにゲームが開始されています！</span>',
-              closeButton: true, //閉じるボタンを表示
-              closeButtonColor: "white" //閉じるボタンの色
-            })
-            return
-          } else {
+                closeButton: true, // 閉じるボタンを表示
+                closeButtonColor: 'white' // 閉じるボタンの色
+              })
+            } else {
             // user is trying to join an already created room
-            const user = {
-              username: this.joiner_name,
-              role: 'guest',
-              damage: 0
+              const user = {
+                username: this.joiner_name,
+                role: 'guest',
+                damage: 0
+              }
+              this.$store.dispatch('addUserToRoom', { roomId: roomId, user: user })
+              // navigate to playroom
+              this.$router.push({
+                name: 'prairiedogplayroom',
+                params: { roomId: roomId }
+              })
             }
-            this.$store.dispatch('addUserToRoom', { roomId: roomId, user: user })
-            // navigate to playroom
-            this.$router.push({
-              name: 'prairiedogplayroom',
-              params: { roomId: roomId }
-            })
-          }
-        })
+          })
       }
     },
 
-    search_word: function() {
+    search_word: function () {
       db.collection('lists')
-      .doc('rooms')
-      .collection('list')
-      .where("secret_word", "==", `${this.secret_word2}` )
-      .orderBy('createdAt','desc')
-      .limit(1)
-      .get().then((snapshot) => {
-        snapshot.docs.forEach(doc => {
-          this.joinRoom(doc.data().Room_ID)
+        .doc('rooms')
+        .collection('list')
+        .where('secret_word', '==', `${this.secret_word2}`)
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .get().then((snapshot) => {
+          snapshot.docs.forEach(doc => {
+            this.joinRoom(doc.data().Room_ID)
+          })
         })
-      })
-      
     }
   },
 
   created () {
     // navigate to mobile page if smartphone is used.
-    if(this.isSmartPhone) {
+    if (this.isSmartPhone) {
       this.$router.push('prairie-dog-mobile')
     }
   }
