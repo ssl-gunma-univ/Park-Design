@@ -230,14 +230,14 @@ export default {
       if (this.restOfallCards === 0) {
         console.log('finish')
         db.collection('anyamonya_rooms')
-            .doc(this.room.id)
-            .collection('chat')
-            .add({
-              message: '山札がなくなりました',
-              createdAtJapan: new Date(),
-              createdAt: this.timestamp(),
-              username: 'システム'
-            })
+          .doc(this.room.id)
+          .collection('chat')
+          .add({
+            message: '山札がなくなりました',
+            createdAtJapan: new Date(),
+            createdAt: this.timestamp(),
+            username: 'システム'
+          })
         exit
       } else {
         this.$store.dispatch('decreaserestOfallCards')
@@ -536,16 +536,16 @@ export default {
       console.log('the room has been removed')
       this.$store.dispatch('brokeAnyamonyaRoom')
       this.$store.dispatch('destroyAnyamonyaRoom')
-    },
-    showdiscord () {
-      const button = new Crate({
-        server: '578796417523384360',
-        channel: '578796417523384362',
-        shard: 'https://disweb.deploys.io'
-      })
-
-      button.notify('Hello world!')
     }
+    // showdiscord () {
+    //   const button = new Crate({
+    //     server: '578796417523384360',
+    //     channel: '578796417523384362',
+    //     shard: 'https://disweb.deploys.io'
+    //   })
+
+    //   button.notify('Hello world!')
+    // }
   },
   created () {
     this.$store.dispatch('watchAnyamonyaRoom', this.$route.params.roomId)
