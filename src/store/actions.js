@@ -65,6 +65,8 @@ export default {
 
     let cardType = []
 
+    let restOfallCards = 0
+
     // create a deck
     var i
     for (i = 0; i < state.numberOfCardTypes; i++) {
@@ -82,6 +84,8 @@ export default {
         rest: state.numberOfEachCard,
         isCalled: false // 名前が当てられたらtrueに．次のカードをめくるとfalseに戻る
       }
+      restOfallCards = restOfallCards + state.numberOfEachCard // 全部のカードの枚数の残り
+      console.log(restOfallCards)
     }
 
     room.cardType = cardType // list of file names of card's image(jpeg).
@@ -93,6 +97,7 @@ export default {
     room.isNextEnabled = true // ホストの次へのボタンが押せるかどうか．trueなら押せる
     room.currentTurnIdx = 0 // 誰がめくる番かを保存．名前を付けた後あるいは名前を当てた後に次のターンに変わる
     room.cardname = ''
+    room.restOfallCards = restOfallCards
 
     db.collection('anyamonya_rooms').add(room)
       .then(docRef => {
@@ -610,7 +615,7 @@ export default {
   },
 
   brokeAnyamonyaRoom ({ commit, state }) {
-    console.log('action.js brokeRoom')
+    console.log('action.js brokeAnyamonyaRoom')
     db.collection('anyamonya_rooms').doc(state.room.id).update({
       roombroke: true
     }).then(() => {
@@ -621,10 +626,23 @@ export default {
       })
   },
   destroyAnyamonyaRoom ({ commit, state }) {
-    console.log('action.js destroyRoom')
+    console.log('action.js destroyAnyamonyaRoom')
     db.collection('anyamonya_rooms').doc(state.room.id).delete().then(() => {
       // history.back(-1)
     })
+      .catch((err) => {
+        console.error(err)
+      })
+  },
+
+  decreaserestOfallCards ({ state }) {
+    console.log('action.js decreaserestOfallCards')
+    state.room.restOfallCards--
+    db.collection('anyamonya_rooms')
+      .doc(state.room.id)
+      .update({
+        restOfallCards: state.room.restOfallCards
+      })
       .catch((err) => {
         console.error(err)
       })

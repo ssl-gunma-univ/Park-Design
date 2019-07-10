@@ -93,5 +93,9 @@ export default {
 
   numberOfEachCard (state) {
     return state.numberOfEachCard
+  },
+
+  restOfallCards (state) {
+    return state.room.restOfallCards
   }
 }

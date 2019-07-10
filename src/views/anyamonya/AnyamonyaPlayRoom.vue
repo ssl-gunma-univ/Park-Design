@@ -139,7 +139,15 @@
         </div>
       </div>
     </aside>
+    <widgetbot
+	　server= '578796417523384360'
+    channel= '578796417523384362'
+    width = "100%"
+    height = "100%"
+    shard= 'https://disweb.deploys.io'
+    ></widgetbot>
   </div>
+
 </template>
 </div>
 </template>
@@ -185,7 +193,8 @@ export default {
       'playing',
       'numberOfCardTypes',
       'numberOfEachCard',
-      'roombroke'
+      'roombroke',
+      'restOfallCards'
     ])
   },
 
@@ -217,45 +226,69 @@ export default {
     },
     nextimage () {
       this.room.isNextEnabled = false
-      this.room.indexnum = Math.floor(Math.random() * this.numberOfCardTypes)
-      this.deck[this.room.indexnum].rest--
-      this.room.stack++
 
-      if (this.deck[this.room.indexnum].name === '') {
-        this.saveActionMessage()
-      } else {
-        this.room.cardname = this.deck[this.room.indexnum].name
+      if (this.restOfallCards === 0) {
+        console.log('finish')
         db.collection('anyamonya_rooms')
-          .doc(this.room.id)
-          .collection('chat')
-          .add({
-            message: 'このカードの名前をタイプ！',
-            createdAtJapan: new Date(),
-            createdAt: this.timestamp(),
-            username: 'システム'
-          })
-        this.room.isKnownCard = true
-        this.deck[this.room.indexnum].isCalled = false
+            .doc(this.room.id)
+            .collection('chat')
+            .add({
+              message: '山札がなくなりました',
+              createdAtJapan: new Date(),
+              createdAt: this.timestamp(),
+              username: 'システム'
+            })
+        exit
+      } else {
+        this.$store.dispatch('decreaserestOfallCards')
+
+        // this.room.indexnum = Math.floor(Math.random() * this.numberOfCardTypes)
+        for (;;) {
+          this.room.indexnum = Math.floor(Math.random() * this.numberOfCardTypes)
+          console.log(this.deck[this.room.indexnum] + '=' + this.deck[this.room.indexnum].rest)
+          if (this.deck[this.room.indexnum].rest !== 0) {
+            break
+          }
+        }
+        this.deck[this.room.indexnum].rest--
+        this.room.stack++
+
+        if (this.deck[this.room.indexnum].name === '') {
+          this.saveActionMessage()
+        } else {
+          this.room.cardname = this.deck[this.room.indexnum].name
+          db.collection('anyamonya_rooms')
+            .doc(this.room.id)
+            .collection('chat')
+            .add({
+              message: 'このカードの名前をタイプ！',
+              createdAtJapan: new Date(),
+              createdAt: this.timestamp(),
+              username: 'システム'
+            })
+          this.room.isKnownCard = true
+          this.deck[this.room.indexnum].isCalled = false
+          db.collection('anyamonya_rooms')
+            .doc(this.room.id)
+            .update({
+              isKnownCard: true
+            })
+        }
         db.collection('anyamonya_rooms')
           .doc(this.room.id)
           .update({
-            isKnownCard: true
+            deck: this.deck,
+            stack: this.room.stack,
+            indexnum: this.room.indexnum,
+            cardname: this.room.cardname,
+            isNextEnabled: false
           })
-      }
-      db.collection('anyamonya_rooms')
-        .doc(this.room.id)
-        .update({
-          deck: this.deck,
-          stack: this.room.stack,
-          indexnum: this.room.indexnum,
-          cardname: this.room.cardname,
-          isNextEnabled: false
-        })
-      this.image = require('@/assets/AnyamonyaCards/' +
+        this.image = require('@/assets/AnyamonyaCards/' +
         this.cardType[this.room.indexnum] +
         '.jpg')
-      this.name = ''
-      this.nextclicked = false
+        this.name = ''
+        this.nextclicked = false
+      }
     },
     saveName () {
       if (!this.room.isNextEnabled && this.name.length > 0) {
@@ -284,7 +317,7 @@ export default {
           .doc(this.room.id)
           .collection('chat')
           .add({
-            message: '命名しました',
+            message: this.me.username + 'が命名しました',
             createdAtJapan: new Date(),
             createdAt: this.timestamp(),
             username: 'システム'
@@ -317,7 +350,7 @@ export default {
         ) {
           this.deck[this.room.indexnum].isCalled = true
           this.room.isNextEnabled = true
-          this.room.isKnownCard = false 
+          this.room.isKnownCard = false
 
           var userlist = this.room.users.map(user => user.username)
           // this.room.users[userlist.indexOf(this.me.username)].have += this.room.stack
@@ -503,6 +536,15 @@ export default {
       console.log('the room has been removed')
       this.$store.dispatch('brokeAnyamonyaRoom')
       this.$store.dispatch('destroyAnyamonyaRoom')
+    },
+    showdiscord () {
+      const button = new Crate({
+        server: '578796417523384360',
+        channel: '578796417523384362',
+        shard: 'https://disweb.deploys.io'
+      })
+
+      button.notify('Hello world!')
     }
   },
   created () {
@@ -510,6 +552,7 @@ export default {
     this.room.id = this.$route.params.roomId
     if (this.roombroke != true) {
       this.fetchMessage()
+      // this.showdiscord()
     }
   }
 }
