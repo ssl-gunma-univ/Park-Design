@@ -70,7 +70,7 @@ export default {
     // create a deck
     var i
     for (i = 0; i < state.numberOfCardTypes; i++) {
-      var random = Math.floor(Math.random() * 13)
+      var random = Math.floor(Math.random() * 24)
       if (cardType.indexOf(random) === -1) {
         cardType[i] = random
       } else {

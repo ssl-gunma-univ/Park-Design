@@ -17,15 +17,17 @@
       <div class="border text-center" style="height: 50vh;">
         <img
           v-if="room.indexnum === -1"
-          class="w-50 img-fluid my-3 mx-auto d-block"
+          class="img-fluid my-3 mx-auto d-block"
           alt="image"
           src="@/assets/AnyamonyaCards/card.jpg"
+          style="width: 300px;"
         />
         <img
         v-else
-        class="w-50 img-fluid my-3 mx-auto d-block"
+        class="img-fluid my-3 mx-auto d-block"
         alt="image"
-        :src='require("@/assets/AnyamonyaCards/" + cardType[room.indexnum] + ".jpg")'
+        style="width: 300px;"
+        :src='require("@/assets/AnyamonyaCards/" + cardType[room.indexnum] + ".png")'
         />
         <div v-if="room.isNextEnabled">名前 : {{ room.cardname }}</div>
         <div>A stack of cards : {{ room.stack }}</div>
@@ -61,7 +63,7 @@
         <input
           v-else
           @keyup.enter="typeName"
-          v-model="name"
+          v-model="message"
           type="text"
           placeholder="Type a name..."
         />
@@ -70,7 +72,7 @@
       <div v-else>
         <input
           @keyup.enter="saveName"
-          v-model="name"
+          v-model="message"
           :disabled="room.isNextEnabled || (deck[room.indexnum] !== undefined && deck[room.indexnum].name !== '')"
           type="text"
           placeholder="Type a name..."
@@ -161,18 +163,13 @@ export default {
     return {
       image: require('@/assets/AnyamonyaCards/card.jpg'),
       name: '', // カードの名前入力フォーム用
-      nextclicked: false, // 次へがクリックされるとtureになる。
+      nextclicked: false, // 次へがクリックされるとtrueになる。
       message: '', // チャットのディスプレイ用
       messages: [] // チャットの取得用
     }
   },
 
   watch: {
-    nextclicked (newNextclicked, oldNextclicked) {
-      if (newNextclicked) {
-        setTimeout(this.nextimage, 0)
-      }
-    },
     roombroke (newQuestion, oldQuestion) {
       this.doquitroom()
       if (this.roombroke != true) {
@@ -223,6 +220,8 @@ export default {
         closeButton: true, // 閉じるボタンを表示
         closeButtonColor: 'white' // 閉じるボタンの色
       })
+      setTimeout(this.nextimage, 3000)
+
     },
     nextimage () {
       this.room.isNextEnabled = false
@@ -274,6 +273,7 @@ export default {
               isKnownCard: true
             })
         }
+
         db.collection('anyamonya_rooms')
           .doc(this.room.id)
           .update({
@@ -286,15 +286,16 @@ export default {
         this.image = require('@/assets/AnyamonyaCards/' +
         this.cardType[this.room.indexnum] +
         '.jpg')
-        this.name = ''
+        this.message = ''
         this.nextclicked = false
       }
     },
     saveName () {
-      if (!this.room.isNextEnabled && this.name.length > 0) {
-        this.deck[this.room.indexnum].name = this.name
+      if (!this.room.isNextEnabled && this.message.length > 0) {
+        this.deck[this.room.indexnum].name = this.message
         this.deck[this.room.indexnum].namedBy = this.me.username
-        this.room.cardname = this.name
+        this.room.cardname = this.message
+        this.nextclicked = false
 
         // set current turn index to next turn
         let currentTurnIdx = this.room.currentTurnIdx
@@ -323,16 +324,16 @@ export default {
             username: 'システム'
           })
 
-        this.name = ''
+        this.message = ''
       }
     },
     typeName () {
-      if (this.name.length > 0) {
+      if (this.message.length > 0) {
         db.collection('anyamonya_rooms')
           .doc(this.room.id)
           .collection('chat')
           .add({
-            message: this.name,
+            message: this.message,
             createdAtJapan: new Date(),
             createdAt: this.timestamp(),
             username: this.me.username
@@ -345,7 +346,7 @@ export default {
           })
 
         if (
-          this.name === this.deck[this.room.indexnum].name &&
+          this.message === this.deck[this.room.indexnum].name &&
           !this.deck[this.room.indexnum].isCalled
         ) {
           this.deck[this.room.indexnum].isCalled = true
@@ -386,7 +387,7 @@ export default {
               username: 'システム'
             })
         }
-        this.name = ''
+        this.message = ''
       }
     },
     timestamp () {
@@ -443,6 +444,10 @@ export default {
             allMessages.push(doc.data())
             console.log(`${doc.id} => ${doc.data()}`)
           })
+          if (allMessages[allMessages.length - 1].message === '正解！') {
+            this.newMessage = true
+            this.nextclicked = false
+          }
           this.messages = allMessages
         })
     },

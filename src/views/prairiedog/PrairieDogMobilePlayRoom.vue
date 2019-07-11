@@ -43,15 +43,15 @@
         <div class="col-4 p-0">
           <span v-if="playing || gameOver">
             <img v-if="userleft.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
             <img v-else-if="userleft.currentCard === '?'" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/？.jpg">
+              src="@/assets/PrairieDogCards/？.png">
             <img v-else class="w-100 rounded"
-              v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.jpg')">
+              v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.png')">
           </span>
           <span v-else>
             <img v-if="userleft.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
           </span>
         </div>
       </div>
@@ -77,15 +77,15 @@
         <div class="col-4 p-0">
           <span v-if="playing || gameOver">
             <img v-if="usertop.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
             <img v-else-if="usertop.currentCard === '?'" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/？.jpg">
+              src="@/assets/PrairieDogCards/？.png">
             <img v-else class="w-100 rounded"
-              v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.jpg')">
+              v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.png')">
           </span>
           <span v-else>
             <img v-if="usertop.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
           </span>
         </div>
       </div>
@@ -112,15 +112,15 @@
         <div class="col-4 p-0">
           <span v-if="playing || gameOver">
             <img v-if="userright.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
             <img v-else-if="userright.currentCard === '?'" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/？.jpg">
+              src="@/assets/PrairieDogCards/？.png">
             <img v-else class="w-100 rounded"
-              v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.jpg')">
+              v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.png')">
           </span>
           <span v-else>
             <img v-if="userright.currentCard === undefined" class="w-100 rounded"
-              src="@/assets/PrairieDogCards/card.jpg">
+              src="@/assets/PrairieDogCards/card.png">
           </span>
         </div>
       </div>
@@ -145,16 +145,16 @@
         </div>
         <div class="col-4 p-0">
           <span v-if="! isPrairieDogCalled && playing">
-            <img class="w-100 rounded" src="@/assets/PrairieDogCards/card.jpg">
+            <img class="w-100 rounded" src="@/assets/PrairieDogCards/card.png">
           </span>
           <span v-if="! playing && ! gameOver">
-            <img class="w-100 rounded" src="@/assets/PrairieDogCards/card.jpg">
+            <img class="w-100 rounded" src="@/assets/PrairieDogCards/card.png">
           </span>
           <span v-if="isPrairieDogCalled">
-            <img v-if="getMyCard() === undefined" src="@/assets/PrairieDogCards/card.jpg">
-            <img v-else-if="getMyCard() === '?'" class="w-100 rounded" src="@/assets/PrairieDogCards/？.jpg">
+            <img v-if="getMyCard() === undefined" src="@/assets/PrairieDogCards/card.png">
+            <img v-else-if="getMyCard() === '?'" class="w-100 rounded" src="@/assets/PrairieDogCards/？.png">
             <img v-else class="w-100 rounded"
-              v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.jpg')">
+              v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.png')">
           </span>
         </div>
       </div>
@@ -386,9 +386,9 @@
                 class="row">
                 <div class="col-9">
                   <img v-if="previousCardsLeft[index - 1].type === '?'" class="w-100 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.jpg">
+                    src="@/assets/PrairieDogCards/？.png">
                   <img v-else class="w-100 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')">
+                    v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.png')">
                 </div>
                 <h4 class="my-auto col-3 d-flex justify-content-end">×{{ previousCardsLeft[index - 1].cardsLeft }}</h4>
               </div>

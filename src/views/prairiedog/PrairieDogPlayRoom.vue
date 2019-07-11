@@ -16,17 +16,17 @@
               <div class="col-9">
                 <img
                   v-if="previousCardsLeft[index - 1].type === undefined"
-                  src="@/assets/PrairieDogCards/card.jpg"
+                  src="@/assets/PrairieDogCards/card.png"
                 >
                 <img
                   v-else-if="previousCardsLeft[index - 1].type === '?'"
                   class="w-100 rounded shadow"
-                  src="@/assets/PrairieDogCards/？.jpg"
+                  src="@/assets/PrairieDogCards/？.png"
                 >
                 <img
                   v-else
                   class="w-100 rounded shadow"
-                  v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"
+                  v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.png')"
                 >
               </div>
               <h4
@@ -56,17 +56,17 @@
                 <p v-if="playing || gameOver">
                   <img
                     v-if="userleft.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.jpg"
+                    src="@/assets/PrairieDogCards/card.png"
                   >
                   <img
                     v-else-if="userleft.currentCard === '?'"
                     class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.jpg"
+                    src="@/assets/PrairieDogCards/？.png"
                   >
                   <img
                     v-else
                     class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.jpg')"
+                    v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.png')"
                   >
                 </p>
                 <p v-if="userleft.damage !== undefined" class="mt-3">ダメージ：{{ userleft.damage }}</p>
@@ -83,17 +83,17 @@
                 <p v-if="playing || gameOver">
                   <img
                     v-if="usertop.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.jpg"
+                    src="@/assets/PrairieDogCards/card.png"
                   >
                   <img
                     v-else-if="usertop.currentCard === '?'"
                     class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.jpg"
+                    src="@/assets/PrairieDogCards/？.png"
                   >
                   <img
                     v-else
                     class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.jpg')"
+                    v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.png')"
                   >
                 </p>
                 <p v-if="usertop.damage !== undefined" class="mt-3">ダメージ：{{ usertop.damage }}</p>
@@ -110,17 +110,17 @@
                 <p v-if="playing || gameOver">
                   <img
                     v-if="userright.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.jpg"
+                    src="@/assets/PrairieDogCards/card.png"
                   >
                   <img
                     v-else-if="userright.currentCard === '?'"
                     class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.jpg"
+                    src="@/assets/PrairieDogCards/？.png"
                   >
                   <img
                     v-else
                     class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.jpg')"
+                    v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.png')"
                   >
                 </p>
                 <p v-if="userright.damage !== undefined" class="mt-3">ダメージ：{{ userright.damage }}</p>
@@ -173,12 +173,12 @@
                           <img
                             v-if="previousCardsLeft[index - 1].type === '?'"
                             class="w-100 rounded shadow"
-                            src="@/assets/PrairieDogCards/？.jpg"
+                            src="@/assets/PrairieDogCards/？.png"
                           >
                           <img
                             v-else
                             class="w-100 rounded shadow"
-                            v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.jpg')"
+                            v-bind:src="require('@/assets/PrairieDogCards/' + previousCardsLeft[index - 1].type + '.png')"
                           >
                         </div>
                         <h4
@@ -378,22 +378,22 @@
             >
               <h3>{{ me.username }}</h3>
               <p v-if="!isPrairieDogCalled && playing">
-                <img class="w-75 rounded shadow" src="@/assets/PrairieDogCards/card.jpg">
+                <img class="w-75 rounded shadow" src="@/assets/PrairieDogCards/card.png">
               </p>
               <p v-if="isPrairieDogCalled">
                 <img
                   v-if="getMyCard() === undefined"
-                  src="@/assets/PrairieDogCards/card.jpg"
+                  src="@/assets/PrairieDogCards/card.png"
                 >
                 <img
                   v-else-if="getMyCard() === '?'"
                   class="w-75 rounded shadow"
-                  src="@/assets/PrairieDogCards/？.jpg"
+                  src="@/assets/PrairieDogCards/？.png"
                 >
                 <img
                   v-else
                   class="w-75 rounded shadow"
-                  v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.jpg')"
+                  v-bind:src="require('@/assets/PrairieDogCards/' + getMyCard() + '.png')"
                 >
               </p>
               <p class="mt-3">ダメージ：{{ getMyDamage() }}</p>
