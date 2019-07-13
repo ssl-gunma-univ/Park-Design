@@ -119,7 +119,6 @@ export default {
   watch: {
     room: function (oldRoom, newRoom) {
       if (this.room.id) {
-        console.log('room.id', this.room.id)
         this.joinRoom()
       }
     }
@@ -148,14 +147,12 @@ export default {
       // add room to firstore and update state.room
       // and state.me
 
-      console.log('dispatching createRoom')
       this.$store.dispatch('createRoom', { room, secret_word })
     },
 
     joinRoom: function (roomId = false) {
       /** Register the user name to the room,
        * and navigate to the waiting room */
-      console.log('navigating to playroom')
 
       if (!roomId) {
         // the room has just been created in db
@@ -219,7 +216,6 @@ export default {
     },
 
     search_word: function () {
-      console.log('secret_word =', this.secret_word2)
       db.collection('lists')
         .doc('rooms')
         .collection('list')
@@ -228,8 +224,6 @@ export default {
         .limit(1)
         .get().then((snapshot) => {
           snapshot.docs.forEach(doc => {
-          // room_id.push(doc.data().Room_ID)
-            console.log(doc.data().Room_ID)
             this.joinRoom(doc.data().Room_ID)
           })
         })

@@ -645,11 +645,7 @@ export default {
     },
 
     destroyRoom () {
-      console.log('the room has been removed')
-      // this.room.roombroke = true;
       this.$store.dispatch('brokeRoom')
-      // this.roombroke = this.room.roombroke;
-      // this.doquitroom();
       this.$store.dispatch('destroyRoom')
     },
 
@@ -680,20 +676,8 @@ export default {
             createdAt: this.timestamp(),
             username: this.me.username
           })
-          .then(function (docRef) {
-            // console.log("Document written with ID: ", docRef.id);
-          })
-          .catch(function (error) {
-            console.error('Error adding document: ', error)
-          })
         this.message = ''
       }
-
-      // db.collection("chat")
-      //   .doc("this.docid[0]")
-      //   .delete().then(() => {console.log("Successed!")});
-      // this.$firestoreRefs.cities.doc(this.docid).delete();
-      // this.$firestoreRefs.selectedCity.delete();
     },
 
     fetchMessage () {
@@ -701,32 +685,18 @@ export default {
         .doc(`${this.roomid}`)
         .collection('chat')
         .orderBy('createdAt')
-        /* .get()
-        .then(querySnapshot => {      //realtime */
         .onSnapshot(querySnapshot => {
           /* realtime */
           let allMessages = []
-          // let allDocid = [];
           querySnapshot.forEach(doc => {
             allMessages.push(doc.data())
-            // allDocid.push(doc.id);
-            console.log(`${doc.id} => ${doc.data()}`)
-            // this.allDocid = `${doc.id}`
           })
-          // querySnapshot.forEach(doc => {
-          //   allDocid.push(doc.id);
-
-          // });
-
-          // this.docid = allDocid;
           this.messages = allMessages
-          // console.log(this.docid[3]);
         })
     },
 
     getroomid () {
       this.roomid = this.$route.params.roomId
-      // this.roomid = this.room.id;
     },
 
     displayTime: function (message) {
@@ -759,9 +729,6 @@ export default {
 
     doquitroom () {
       if (this.roombroke == true) {
-        console.log('doQuitRoom was executed')
-        // alert('部屋が解散されました。')
-        // alert('See you late. The room has been removed by host.')
 
         const jsFrame2 = new JSFrame()
 
@@ -781,7 +748,6 @@ export default {
           closeButtonColor: 'white' // 閉じるボタンの色
         })
         history.back(-1)
-        // location.reload();
       }
     },
 
@@ -794,8 +760,6 @@ export default {
         .limit(1)
         .get().then((snapshot) => {
           snapshot.docs.forEach(doc => {
-          // room_id.push(doc.data().Room_ID)
-            console.log(doc.data().secret_word)
             this.secret_word = doc.data().secret_word
           })
         })
@@ -804,7 +768,6 @@ export default {
 
   created () {
     // TODO: check if roomId is in localstorage here
-    // console.log("created");
     this.$store.dispatch('watchRoom', this.$route.params.roomId)
     this.getroomid()
     if (this.roombroke != true) {
@@ -816,23 +779,11 @@ export default {
   },
 
   mounted () {
-    console.log('mounted')
-    // if (this.roombroke != true) {
-    // this.fetchMessage();
-    // }
     document.onscroll = e => {
       this.position =
         document.documentElement.scrollTop || document.body.scrollTop
     }
   }
-
-  // updated() {
-  // this.roombroke = this.room.roombroke;
-  //   // console.log("updated");
-  //   // this.doquitroom();
-  // },
-
-  // beforeUpdate() {}
 }
 </script>
 

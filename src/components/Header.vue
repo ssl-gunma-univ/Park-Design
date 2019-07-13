@@ -11,20 +11,8 @@
           <b-nav-item-dropdown text="Games" right>
             <b-dropdown-item href="/prairie-dog">プレーリードッグ</b-dropdown-item>
             <b-dropdown-item href="/anya-monya">あんにゃもんにゃ</b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item href="#">Rules</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item href="/about">About</b-nav-item>
-        </b-navbar-nav>
-
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item-dropdown>
-            <!-- Using 'button-content' slot -->
-            <template slot="button-content"><em>User</em></template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-          </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </div>

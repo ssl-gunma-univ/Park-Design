@@ -9,6 +9,7 @@ import PrairieDogMobilePlayRoom from './views/prairiedog/PrairieDogMobilePlayRoo
 import PrairieDogRules from './views/prairiedog/PrairieDogRules.vue'
 import AnyamonyaIndex from './views/anyamonya/AnyamonyaIndex.vue'
 import AnyamonyaPlayRoom from './views/anyamonya/AnyamonyaPlayRoom.vue'
+import AnyamonyaRules from './views/anyamonya/AnyamonyaRules.vue'
 import About from './views/About.vue'
 
 Vue.use(Router)
@@ -56,6 +57,11 @@ export default new Router({
       path: '/anyamonyaplayroom/:roomId',
       name: 'anyamonyaplayroom',
       component: AnyamonyaPlayRoom
+    },
+    {
+      path: '/anya-monya/rules',
+      name: 'anyamonyarules',
+      component: AnyamonyaRules
     },
     {
       path: '/about',

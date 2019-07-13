@@ -125,7 +125,10 @@
       <div class="col-9 pt-2 pb-2">「プレーリードッグ」宣言後，山札から1枚引き，そのカードと置き換わる<br>山札が0枚の場合は0となる</div>
     </div>
     <h3 class="mt-3 topic">元ネタ</h3>
-    <p class="pb-5" style="text-indent: 1em;">プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームです．</p>
+    <p class="pb-5 px-3" style="text-indent: 1em;">
+      プレーリードッグの元となったゲームはSpartaco Albertarelliさん考案のCoyoteというゲームである．
+      「Coyote」と「プレーリードッグ」のルールの相違は，ライフが0になったものからいなくなる脱落制ではなく，ダメージが蓄積されるダメージ制を採っている点である．
+    </p>
   </main>
 </template>
 

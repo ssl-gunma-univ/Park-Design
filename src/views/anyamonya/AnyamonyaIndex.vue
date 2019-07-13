@@ -11,7 +11,7 @@
       </ul>
       <p class="text-danger">コピペは厳禁</p>
       <div class="clearfix">
-        <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
+        <a class="float-right" href="/anya-monya/rules" target="_blank">詳細</a>
       </div>
     </div>
 
@@ -45,12 +45,38 @@
             <label>Username</label>
           </div>
 
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputState">カードの種類</label>
+              <select id="inputState" class="form-control" v-model="type" required>
+                <option>4 種類</option>
+                <option>5 種類</option>
+                <option>6 種類</option>
+                <option>7 種類</option>
+                <option>8 種類</option>
+                <option>9 種類</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputState">各カード枚数</label>
+              <select id="inputState" class="form-control" v-model="number" required>
+                <option selected>2 枚</option>
+                <option selected>3 枚</option>
+                <option selected>4 枚</option>
+                <option selected>5 枚</option>
+                <option selected>6 枚</option>
+                <option selected>7 枚</option>
+              </select>
+            </div>
+          </div>
+
           <button
             :disabled="!creator_name || !secret_word"
             @click.prevent="createRoom"
             class="btn btn-lg btn-primary btn-block"
             type="submit"
           >Create a Room</button>
+          
         </form>
       </div>
 
@@ -92,7 +118,7 @@
         </form>
       </div>
     </div>
-    <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+    <!-- <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe> -->
   </main>
 </template>
 
@@ -111,7 +137,9 @@ export default {
       joiner_name: '',
       room_id: '',
       secret_word2: '',
-      abc: []
+      abc: [],
+      type: '5 種類',
+      number: '3 枚'
     }
   },
   computed: {
@@ -126,7 +154,6 @@ export default {
   watch: {
     room: function (oldRoom, newRoom) {
       if (this.room.id) {
-        console.log('room.id', this.room.id)
         this.joinRoom()
       }
     }
@@ -142,18 +169,18 @@ export default {
       }
 
       const secret_word = this.secret_word
+      const type = parseInt(this.type)
+      const number = parseInt(this.number)
 
       // add room to firstore and update state.room
       // and state.me
 
-      console.log('dispatching createRoom')
-      this.$store.dispatch('createAnyamonyaRoom', { room, secret_word })
+      this.$store.dispatch('createAnyamonyaRoom', { room, secret_word, type, number })
     },
 
     joinRoom: function (roomId = false) {
       /** Register the user name to the room,
        * and navigate to the waiting room */
-      console.log('navigating to playroom')
 
       if (!roomId) {
         // the room has just been created in db
@@ -176,7 +203,6 @@ export default {
     },
 
     search_word: function () {
-      console.log('secret_word =', this.secret_word2)
       db.collection('lists')
         .doc('anyamonya_rooms')
         .collection('list')
@@ -185,9 +211,6 @@ export default {
         .limit(1)
         .get().then((snapshot) => {
           snapshot.docs.forEach(doc => {
-          // this.room.id = doc.data().Room_ID
-          // room_id.push(doc.data().Room_ID)
-            console.log(doc.data().Room_ID)
             this.joinRoom(doc.data().Room_ID)
           })
         }).catch((err) => console.error(err))

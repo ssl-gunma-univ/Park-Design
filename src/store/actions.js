@@ -24,9 +24,6 @@ export default {
         /* saving the id of the room on firestore */
         room.id = docRef.id
         console.log('secretwrod', secret_word)
-        // commit room to state
-        // commit('roomJoined', room)
-        console.log('createRoom: roomID', room.id)
         dispatch('watchRoom', room.id)
 
         db.collection('lists')
@@ -38,15 +35,6 @@ export default {
             createdAtJapan: new Date(),
             createdAt: new Date().getTime() / 1000.0
           })
-          .then(function (docRef) {
-            console.log('Room list written with ID: ', docRef.id)
-          })
-          .catch(function (error) {
-            console.error('Error adding room list: ', error)
-          })
-
-        // dispatch('addsecret_word',secret_word)
-        // dispatch('addList',room.id,secret_word)
 
         // also commit player on this client who is also the host
         // that is why he is indexed by 0
@@ -62,14 +50,12 @@ export default {
     const secret_word = payload.secret_word
 
     let deck = []
-
     let cardType = []
-
     let restOfallCards = 0
 
     // create a deck
     var i
-    for (i = 0; i < state.numberOfCardTypes; i++) {
+    for (i = 0; i < payload.type; i++) {
       var random = Math.floor(Math.random() * 24)
       if (cardType.indexOf(random) === -1) {
         cardType[i] = random
@@ -77,15 +63,14 @@ export default {
         i--
       }
     }
-    for (i = 0; i < state.numberOfCardTypes; i++) {
+    for (i = 0; i < payload.type; i++) {
       deck[i] = {
         name: '',
         namedBy: '',
-        rest: state.numberOfEachCard,
+        rest: payload.number,
         isCalled: false // 名前が当てられたらtrueに．次のカードをめくるとfalseに戻る
       }
-      restOfallCards = restOfallCards + state.numberOfEachCard // 全部のカードの枚数の残り
-      console.log(restOfallCards)
+      restOfallCards = restOfallCards + payload.number // 全部のカードの枚数の残り
     }
 
     room.cardType = cardType // list of file names of card's image(jpeg).
@@ -104,9 +89,6 @@ export default {
         /* saving the id of the room on firestore */
         room.id = docRef.id
         console.log('secretwrod', secret_word)
-        // commit room to state
-        // commit('roomJoined', room)
-        console.log('createRoom: roomID', room.id)
         dispatch('watchAnyamonyaRoom', room.id)
 
         db.collection('lists')
@@ -118,39 +100,12 @@ export default {
             createdAtJapan: new Date(),
             createdAt: new Date().getTime() / 1000.0
           })
-          .then(function (docRef) {
-            console.log('Room list written with ID: ', docRef.id)
-          })
-          .catch(function (error) {
-            console.error('Error adding room list: ', error)
-          })
-
-        // dispatch('addsecret_word',secret_word)
-        // dispatch('addList',room.id,secret_word)
 
         // also commit player on this client who is also the host
         // that is why he is indexed by 0
         commit('userLogedIn', room.users[0])
       })
   },
-
-  // addList ({commit, dispatch, state }, {roomId,secret_word}){
-  //   db.collection("lists")
-  //       .doc("rooms")
-  //       .collection("list")
-  //       .add({
-  //         Room_ID: roomId,
-  //         secret_word: secret_word,
-  //         createdAtJapan: new Date(),
-  //         createdAt: new Date().getTime() / 1000.0
-  //       })
-  //       .then(function(docRef) {
-  //         console.log("Room list written with ID: ", docRef.id);
-  //       })
-  //       .catch(function(error) {
-  //         console.error("Error adding room list: ", error);
-  //       });
-  // },
 
   addUserToRoom ({ commit, state, dispatch }, payload) {
     db.collection('rooms').doc(payload.roomId).update({
@@ -232,7 +187,6 @@ export default {
       previousCards: cards
     })
       .then(() => {
-        console.log('cards successfuly reset')
         db.collection('rooms')
           .doc(state.room.id)
           .collection('chat')
@@ -255,7 +209,6 @@ export default {
 
     let users = state.room.users.slice()
     // make copy to avoid accidentaly updating views
-    console.log('cards to draw from', cards)
 
     var randomDraw = () => {
       let cardDrawn = false
@@ -281,7 +234,6 @@ export default {
     for (let card of cards) {
       remaining += card.cardsLeft
     }
-    console.log('remaining number of cards : ' + remaining)
 
     // update db
     state.room.cards = cards
@@ -292,7 +244,6 @@ export default {
     })
       // NOTE: state is updated when db is updated
       .then(() => {
-        console.log('users have drawn cards')
         db.collection('rooms')
           .doc(state.room.id)
           .collection('chat')
@@ -317,7 +268,6 @@ export default {
     })
       // NOTE: state is updated when db is updated
       .then(() => {
-        console.log('preprosessing then')
         dispatch('drawCards', cards)
       })
   },
@@ -593,7 +543,6 @@ export default {
   },
 
   brokeRoom ({ commit, state }) {
-    console.log('action.js brokeRoom')
     db.collection('rooms').doc(state.room.id).update({
       roombroke: true
     }).then(() => {
@@ -605,7 +554,6 @@ export default {
   },
 
   destroyRoom ({ commit, state }) {
-    console.log('action.js destroyRoom')
     db.collection('rooms').doc(state.room.id).delete().then(() => {
       // history.back(-1)
     })
@@ -615,7 +563,6 @@ export default {
   },
 
   brokeAnyamonyaRoom ({ commit, state }) {
-    console.log('action.js brokeAnyamonyaRoom')
     db.collection('anyamonya_rooms').doc(state.room.id).update({
       roombroke: true
     }).then(() => {
@@ -626,7 +573,6 @@ export default {
       })
   },
   destroyAnyamonyaRoom ({ commit, state }) {
-    console.log('action.js destroyAnyamonyaRoom')
     db.collection('anyamonya_rooms').doc(state.room.id).delete().then(() => {
       // history.back(-1)
     })
@@ -636,7 +582,6 @@ export default {
   },
 
   decreaserestOfallCards ({ state }) {
-    console.log('action.js decreaserestOfallCards')
     state.room.restOfallCards--
     db.collection('anyamonya_rooms')
       .doc(state.room.id)
@@ -647,16 +592,4 @@ export default {
         console.error(err)
       })
   }
-
-  // addsecret_word ({ commit, state },secret_word) {
-  //   console.log("action.js addseecret_word")
-  //   db.collection('rooms').doc(state.room.id).update({
-  //     secret_word: secret_word
-  //   }).then(() => {
-
-  //   })
-  //     .catch((err) => {
-  //       console.error(err)
-  //     })
-  // }
 }

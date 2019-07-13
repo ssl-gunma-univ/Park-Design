@@ -87,14 +87,6 @@ export default {
     return state.room.named
   },
 
-  numberOfCardTypes (state) {
-    return state.numberOfCardTypes
-  },
-
-  numberOfEachCard (state) {
-    return state.numberOfEachCard
-  },
-
   restOfallCards (state) {
     return state.room.restOfallCards
   }

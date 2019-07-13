@@ -20,6 +20,7 @@
                   は，ハッタリと推理が勝負のカギを握る，心理戦ボードゲームです．
                   『場に出ている数字の合計値を予想する』ゲームですが，その一番の特徴は『自分の数字だけ見えない』ということです．
                   つまり「相手の見えている数字」と「自分の見えない数字」があり，その合計の数を推理します．
+                  <b>(2~4人用)</b>
               </p>
               <div class="clearfix">
                 <router-link v-if="isSmartPhone" to="/prairie-dog-mobile" class="btn btn-primary float-right">Play</router-link>
@@ -30,12 +31,13 @@
         </div>
         <div class="col-md-6 col-lg-4 mb-3 px-0">
           <div class="card mx-auto" style="width: 90%;">
-            <img src="https://akiyosblog.com/wp-content/uploads/2016/01/DSC_9844.jpg" class="card-img-top" alt="...">
+            <img src="@/assets/Images/logo_anyamonya.png" class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title font-weight-bold">あんにゃもんにゃ</h5>
               <p class="card-text">
                 <strong>あんにゃもんにゃ</strong>は，謎生物が描かれたカードが中央の場に次々とめくられるたびに，
                 その人のセンスで特徴を捉えた名前を付け，全員で共有し，以降もし同じものがめくられたらその名前をいちタイプして，溜まったカードを獲得し，集めた枚数を競うゲームです．
+                <b>(2~4人用)</b>
               </p>
               <div class="clearfix">
                 <router-link v-if="isSmartPhone" to="/anya-monya" class="btn btn-primary float-right">Play</router-link>
