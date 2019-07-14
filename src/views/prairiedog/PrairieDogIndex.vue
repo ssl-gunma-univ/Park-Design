@@ -1,21 +1,29 @@
 <template>
   <main class="container shadow bg-white pb-5">
     <div class="jumbotron">
-      <h1>プレーリードッグ</h1>
+    <!-- ******************************* THE DIFFERENT ******************************-->
+      <h1 class="welcome">プレーリードッグ</h1>
       <hr>
-      <h2>ルール</h2>
+      <h2 class="welcome">ルール</h2>
       <ul>
-        <li>前の人よりも「大きい数字」を宣言</li>
-        <li>前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
+        <li class="welcome">前の人よりも「大きい数字」を宣言</li>
+        <li class="prairie_rule">前の人の宣言が合計値を超えたと思ったら「プレーリードッグ！」と宣言</li>
       </ul>
+      <!-- *************************************************** -->
       <div class="clearfix">
         <a class="float-right" href="/prairie-dog/rules" target="_blank">詳細</a>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-sm-12 col-lg-6 p-5">
-        <form class="form-signin card p-5">
+
+     <div class="login_box col-sm-12 col-lg-6"
+         :class="{'p-1':isSmartPhone,
+                  'p-5':!isSmartPhone}">
+        <form class="form-signin card"
+         :class="{'px-2':isSmartPhone,
+                  'py-5':isSmartPhone,
+                  'p-5':!isSmartPhone}">
           <div class="text-center">
             <h1 class="h3 mb-3 font-weight-normal">Create a Room here</h1>
             <p>Enter Secret word and Username</p>
@@ -51,9 +59,15 @@
           >Create a Room</button>
         </form>
       </div>
-
-      <div class="col-sm-12 col-lg-6 p-5">
-        <form class="form-signin card p-5">
+      <!-- CHANGE SOMETHING HERE -->
+     <div class="login_box col-sm-12 col-lg-6"
+         :class="{'p-1':isSmartPhone,
+                  'p-5':!isSmartPhone}">
+        <form class="form-signin card"
+         :class="{'px-2':isSmartPhone,
+                  'py-5':isSmartPhone,
+                  'p-5':!isSmartPhone}">
+    <!-- ******************************** -->
           <div class="text-center">
             <h1 class="h3 mb-3 font-weight-normal">Join a Room here</h1>
             <p>Enter Secret word and Username</p>
@@ -90,7 +104,6 @@
         </form>
       </div>
     </div>
-    <!-- <iframe src="https://discordapp.com/widget?id=578796417523384360&theme=dark" width="300" height="500" allowtransparency="true" frameborder="0"></iframe> -->
   </main>
 </template>
 
@@ -109,19 +122,17 @@ export default {
       joiner_name: '',
       room_id: '',
       secret_word2: '',
-      abc: []
+      abc: [],
+      isSmartPhone: false
     }
   },
   computed: {
     ...mapState([
       'rooms',
       'room' // always update when state changes
-    ]),
-    isSmartPhone: function () {
-      return isMobile.phone
-    }
+    ])
   },
-  watch: {
+   watch: {
     room: function (oldRoom, newRoom) {
       if (this.room.id) {
         this.joinRoom()
@@ -129,6 +140,10 @@ export default {
     }
   },
   methods: {
+    isMobilePhone: function () {
+      this.isSmartPhone = isMobile.phone
+      console.log(this.isSmartPhone)
+    },
     createRoom: function () {
       /** Create room in firestore, register the host's name
        * and navigate to the waiting room */
@@ -136,15 +151,6 @@ export default {
       // initializing room
       const room = {
         users: [{ username: this.creator_name, role: 'host', damage: 0 }]
-        // events: [
-        //   // events have action and author properties
-        //   // action can be an object
-        //   {
-        //     action: "room created!",
-        //     author: this.creator_name,
-        //     createdAt: new Date().getTime()/1000.0
-        //   }
-        // ]
       }
 
       const secret_word = this.secret_word
@@ -236,10 +242,8 @@ export default {
   },
 
   created () {
-    // navigate to mobile page if smartphone is used.
-    if (this.isSmartPhone) {
-      this.$router.push('prairie-dog-mobile')
-    }
+    // change style if a user uses smartphone device
+    this.isMobilePhone()
   }
 }
 </script>

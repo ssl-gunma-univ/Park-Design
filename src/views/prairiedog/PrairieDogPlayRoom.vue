@@ -42,90 +42,24 @@
           <div class="row mb-2">
             <div v-if="nplayers == 1" class="col-12 m-1 pt-5 pb-5 text-center back rounded shadow">
               <h3>waiting for other players</h3>
-              <!-- <p>Your room ID is {{ room.id }}</p> -->
               <p>Secret word is {{ secret_word }}</p>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                v-if="userleft"
-                class="mb-2 text-center rounded shadow"
-                v-bind:class="{ turn: userleft.username === getUsername(currentTurnIdx), back: !(userleft.username === getUsername(currentTurnIdx)), 'py-5': ! playing && ! gameOver }"
-              >
-                <h3 id="name_p1">{{ userleft.username }}</h3>
-                <p v-if="playing || gameOver">
-                  <img
-                    v-if="userleft.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.png"
-                  >
-                  <img
-                    v-else-if="userleft.currentCard === '?'"
-                    class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.png"
-                  >
-                  <img
-                    v-else
-                    class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + userleft.currentCard + '.png')"
-                  >
-                </p>
-                <p v-if="userleft.damage !== undefined" class="mt-3">ダメージ：{{ userleft.damage }}</p>
-              </div>
-            </div>
+			<user-component 
+                :user="userleft" 
+                :currentTurnUserName="getUsername(currentTurnIdx)" 
+            />
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                v-if="usertop"
-                class="mb-2 text-center rounded shadow"
-                v-bind:class="{ turn: usertop.username === getUsername(currentTurnIdx), back: !(usertop.username === getUsername(currentTurnIdx)), 'py-5': ! playing && ! gameOver }"
-              >
-                <h3 id="name_p2">{{ usertop.username }}</h3>
-                <p v-if="playing || gameOver">
-                  <img
-                    v-if="usertop.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.png"
-                  >
-                  <img
-                    v-else-if="usertop.currentCard === '?'"
-                    class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.png"
-                  >
-                  <img
-                    v-else
-                    class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + usertop.currentCard + '.png')"
-                  >
-                </p>
-                <p v-if="usertop.damage !== undefined" class="mt-3">ダメージ：{{ usertop.damage }}</p>
-              </div>
-            </div>
+            <user-component 
+                :user="usertop" 
+                :currentTurnUserName="getUsername(currentTurnIdx)" 
+            />
 
-            <div class="col-md-6 col-lg-4">
-              <div
-                v-if="userright"
-                class="mb-2 text-center rounded shadow"
-                v-bind:class="{ turn: userright.username === getUsername(currentTurnIdx), back: !(userright.username === getUsername(currentTurnIdx)), 'py-5': ! playing && ! gameOver }"
-              >
-                <h3 id="name_p3">{{ userright.username }}</h3>
-                <p v-if="playing || gameOver">
-                  <img
-                    v-if="userright.currentCard === undefined"
-                    src="@/assets/PrairieDogCards/card.png"
-                  >
-                  <img
-                    v-else-if="userright.currentCard === '?'"
-                    class="w-75 rounded shadow"
-                    src="@/assets/PrairieDogCards/？.png"
-                  >
-                  <img
-                    v-else
-                    class="w-75 rounded shadow"
-                    v-bind:src="require('@/assets/PrairieDogCards/' + userright.currentCard + '.png')"
-                  >
-                </p>
-                <p v-if="userright.damage !== undefined" class="mt-3">ダメージ：{{ userright.damage }}</p>
-              </div>
-            </div>
+            <user-component 
+                :user="userright" 
+                :currentTurnUserName="getUsername(currentTurnIdx)" 
+            />
+
           </div>
 
           <div class="row">
@@ -248,61 +182,11 @@
                       <b-collapse id="accordion-1" accordion="my-accordion" role="tabpanel">
                         <b-card-body>
                           <b-card-text style="text-indent: 1em;">カードは14種類存在し，それぞれ枚数が決まっています．山札は合計で36枚になります．</b-card-text>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">-10</p>
-                            <p class="mt-3">1枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">-5</p>
-                            <p class="mt-3">2枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">0</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">1</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">2</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">3</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">4</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">5</p>
-                            <p class="mt-3">4枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">10</p>
-                            <p class="mt-3">3枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">15</p>
-                            <p class="mt-3">2枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">20</p>
-                            <p class="mt-3">1枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">×2</p>
-                            <p class="mt-3">1枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">MAX → 0</p>
-                            <p class="mt-3">1枚</p>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center w-100">
-                            <p class="mt-3">?</p>
-                            <p class="mt-3">1枚</p>
+                          <div 
+							v-for="(card, index) in cardsType"
+							class="d-flex justify-content-between align-items-center w-100">
+                            <p class="mt-3">{{ card }}</p>
+                            <p class="mt-3">{{ initialCardNumbers[index] }}枚</p>
                           </div>
                         </b-card-body>
                       </b-collapse>
@@ -519,18 +403,22 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { db } from '@/main'
+import UserComponent  from './components/UserComponent.vue'
 
 export default {
+  
+  components: {
+	UserComponent
+  },
+
   data () {
     return {
       attempt: '',
       loading: false,
-      // comments: [],
       message: '',
       messages: [],
       roomid: '',
       secret_word: ''
-      // roombroke: false
     }
   },
 
@@ -545,20 +433,9 @@ export default {
     }
   },
 
-  /*   firestore() {
-
-    return {
-      // firestoreのcommentsコレクションを参照
-      comments: db.collection("rooms").doc(`${this.roomid}`).collection("chat").orderBy("createdAt")
-    };
-     */
-  /* firestore: {
-      // firestoreのcommentsコレクションを参照
-            comments: db.collection("rooms").doc("Yd3ezooQdDjkgfFBGmq4").collection("chat").orderBy("createdAt")
-  }, */
 
   computed: {
-    ...mapState(['me', 'room', 'cardsType']),
+    ...mapState(['me', 'room', 'cardsType', 'initialCardNumbers']),
     ...mapGetters([
       'myIndexInRoom',
       'userleft',
@@ -573,7 +450,6 @@ export default {
       'cardsLeft',
       'previousCardsLeft',
       'events',
-      /*  */
       'roombroke'
     ])
   },
@@ -661,11 +537,6 @@ export default {
     saveMessage () {
       // save to firestore
       if (this.message.length != 0 && !this.roombroke) {
-        /* this.$firestoreRefs.chat.add({
-          message: this.message,
-          createdAt: new Date(),
-          username: this.me.username
-        }); */
 
         db.collection('rooms')
           .doc(`${this.roomid}`)
@@ -787,94 +658,6 @@ export default {
 }
 </script>
 
-<style>
-.gameboard {
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#d2dfed+0,a6c0e3+0,afc7e8+14,afc7e8+14,c8d7eb+35,bad0ef+66,99b5db+88,799bc8+100 */
-  background: #d2dfed; /* Old browsers */
-  background: -moz-linear-gradient(
-    top,
-    #d2dfed 0%,
-    #a6c0e3 0%,
-    #afc7e8 14%,
-    #afc7e8 14%,
-    #c8d7eb 35%,
-    #bad0ef 66%,
-    #99b5db 88%,
-    #799bc8 100%
-  ); /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    top,
-    #d2dfed 0%,
-    #a6c0e3 0%,
-    #afc7e8 14%,
-    #afc7e8 14%,
-    #c8d7eb 35%,
-    #bad0ef 66%,
-    #99b5db 88%,
-    #799bc8 100%
-  ); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    to bottom,
-    #d2dfed 0%,
-    #a6c0e3 0%,
-    #afc7e8 14%,
-    #afc7e8 14%,
-    #c8d7eb 35%,
-    #bad0ef 66%,
-    #99b5db 88%,
-    #799bc8 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2dfed', endColorstr='#799bc8',GradientType=0 ); /* IE6-9 */
-}
-
-.centerboard {
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#b0d4e3+0,88bacf+100;Grey+3D+%233 */
-  background: rgb(176, 212, 227); /* Old browsers */
-  background: -moz-linear-gradient(
-    top,
-    rgba(176, 212, 227, 1) 0%,
-    rgba(136, 186, 207, 1) 100%
-  ); /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    top,
-    rgba(176, 212, 227, 1) 0%,
-    rgba(136, 186, 207, 1) 100%
-  ); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    to bottom,
-    rgba(176, 212, 227, 1) 0%,
-    rgba(136, 186, 207, 1) 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b0d4e3', endColorstr='#88bacf',GradientType=0 ); /* IE6-9 */
-}
-
-.input_msg_write input {
-  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-  border: medium none;
-  color: #4c4c4c;
-  font-size: 15px;
-  min-height: 48px;
-  width: 100%;
-}
-
-.type_msg {
-  border-top: 1px solid #c4c4c4;
-  position: relative;
-}
-
-.msg_send_btn {
-  background: #05728f none repeat scroll 0 0;
-  border: medium none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-size: 17px;
-  height: 33px;
-  position: absolute;
-  /* right: 0; */
-  right: 2%;
-  top: 8px;
-  /* width: 33px; */
-  width: 33px;
-}
+<style lang='scss'>
+@import 'styles/playroom'
 </style>
