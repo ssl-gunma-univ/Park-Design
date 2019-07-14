@@ -122,7 +122,6 @@ export default {
       joiner_name: '',
       room_id: '',
       secret_word2: '',
-      abc: [],
       isSmartPhone: false
     }
   },
@@ -169,10 +168,17 @@ export default {
         // the room has just been created in db
         roomId = this.room.id
         // navigate to playroom
-        this.$router.push({
-          name: 'prairiedogplayroom',
-          params: { roomId: roomId }
-        })
+        if(this.isSmartPhone){
+          this.$router.push({
+            name: 'prairiedogmobileplayroom',
+            params: { roomId: roomId }
+          })
+        }else{
+          this.$router.push({
+            name: 'prairiedogplayroom',
+            params: { roomId: roomId }
+          })
+        }
       } else {
         db.collection('rooms').doc(roomId).get({})
           .then((doc) => {
@@ -217,10 +223,17 @@ export default {
               }
               this.$store.dispatch('addUserToRoom', { roomId: roomId, user: user })
               // navigate to playroom
-              this.$router.push({
-                name: 'prairiedogplayroom',
-                params: { roomId: roomId }
-              })
+              if(this.isSmartPhone){
+                this.$router.push({
+                  name: 'prairiedogmobileplayroom',
+                  params: { roomId: roomId }
+                })
+              }else{
+                this.$router.push({
+                  name: 'prairiedogplayroom',
+                  params: { roomId: roomId }
+                })
+              }
             }
           })
       }
