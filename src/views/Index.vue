@@ -23,8 +23,7 @@
                   <b>(2~4人用)</b>
               </p>
               <div class="clearfix">
-                <router-link v-if="isSmartPhone" to="/prairie-dog-mobile" class="btn btn-primary float-right">Play</router-link>
-                <router-link v-else to="/prairie-dog" class="btn btn-primary float-right">Play</router-link>
+                <router-link to="/prairie-dog" class="btn btn-primary float-right">Play</router-link>
               </div>
             </div>
           </div>
