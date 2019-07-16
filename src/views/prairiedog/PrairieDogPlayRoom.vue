@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid">
+
+    <div ref="emitter" id="emitter"></div>
+    <div ref="prairie" id="prairie" v-show="animActive">Prairie Dog!</div>
     <div class="row">
       <aside
         class="col-lg-12 col-xl-2 rouded shadow text-white d-none d-xl-block"
@@ -404,11 +407,11 @@
 import { mapState, mapGetters } from 'vuex'
 import { db } from '@/main'
 import UserComponent  from './components/UserComponent.vue'
+import { TimelineLite, TweenLite, Elastic } from 'gsap'
 
 export default {
-  
   components: {
-	UserComponent
+    UserComponent
   },
 
   data () {
@@ -418,7 +421,13 @@ export default {
       message: '',
       messages: [],
       roomid: '',
-      secret_word: ''
+      secret_word: '',
+      emitterSize: 50,
+      dotNums: 150,
+      dotSizeMax: 20,
+      dotSizeMin: 5,
+      tl: Object,
+      animActive: false
     }
   },
 
@@ -432,7 +441,6 @@ export default {
       }
     }
   },
-
 
   computed: {
     ...mapState(['me', 'room', 'cardsType', 'initialCardNumbers']),
@@ -454,6 +462,84 @@ export default {
     ])
   },
   methods: {
+    // Animation starts here
+    disableBomb () {
+      this.animActive = false
+    },
+
+    activateBomb () {
+      this.animActive = true
+      setTimeout(this.executeBomb, 300)
+    },
+
+    executeBomb () {
+      this.tl = new TimelineLite()
+      var { emitter, prairie } = this.$refs
+
+      // Show Prairie Dog
+      this.tl.to(prairie, 1, {
+        scale: 3.0,
+        opacity: 1,
+        color: '#42b983',
+        ease: Elastic.easeIn
+      })
+
+      // Create Dots Inside the Emitter
+      for (let i = 0; i < this.dotNums; i++) {
+        var size = this.getRandom(this.dotSizeMin, this.dotSizeMax)
+        var angle = Math.random() * Math.PI * 30
+        var length = Math.random() * (this.emitterSize / 2 - size / 2)
+
+        var dot = document.createElement('div')
+        dot.className = 'dot'
+        emitter.appendChild(dot)
+
+        // set the dot's position randomly
+        TweenLite.set(dot, {
+          x: Math.cos(angle) * length,
+          y: Math.sin(angle) * length,
+          css: {
+            width: size,
+            height: size,
+            background: this.getRandomColors,
+            zIndex: 1
+          },
+          force3D: true
+        })
+        // animate the dots to random directions
+        this.tl.to(dot, 1.5, {
+          opacity: 0,
+          x: Math.cos(angle) * length * 25,
+          y: Math.sin(angle) * length * 25,
+          rotation: 180
+        }, 0.2)
+      }
+
+      this.tl.eventCallback('onComplete', this.removeChild)
+    },
+    // generate random number between (min,max)
+    getRandom (min, max) {
+      return min + Math.random() * (max - min)
+    },
+
+    // remove all the element with `dot` class
+    removeChild () {
+      var params = document.getElementsByClassName('dot')
+      while (params[0]) {
+        params[0].parentNode.removeChild(params[0])
+      }
+      this.tl.reverse()
+      setTimeout(this.disableBomb, 1000)
+    },
+
+    // generate random rgb color
+    getRandomColors () {
+      var r = Math.floor(this.getRandom(0, 255))
+      var g = Math.floor(this.getRandom(0, 255))
+      var b = Math.floor(this.getRandom(0, 255))
+      return `rgb(${r},${g},${b})`
+    },
+    // Animation ends here
     getUsername (index) {
       if (index !== undefined) {
         return this.room.users[index].username
@@ -502,6 +588,7 @@ export default {
     },
 
     callPrairieDog () {
+      this.activateBomb()
       this.attempt = ''
       this.$store.dispatch(
         'callPrairieDog',
@@ -613,8 +700,7 @@ export default {
             // backgroundColor: "rgba(0,124,255,0.8)"
             backgroundColor: 'rgba(255,0,0,0.8)'
           },
-          html:
-            '<span style="color:white;">See you late. The room has been removed by host.</span>',
+          html: '<span style="color:white;">See you late. The room has been removed by host.</span>',
           closeButton: true, // 閉じるボタンを表示
           closeButtonColor: 'white' // 閉じるボタンの色
         })
@@ -659,5 +745,30 @@ export default {
 </script>
 
 <style lang='scss'>
-@import 'styles/playroom'
+@import 'styles/playroom';
+.box{
+  background: lightgreen;
+  width: 100px;
+  height: 100px;
+}
+#emitter{
+  border: 2px dashed lightgreen;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+#prairie{
+  position: fixed;
+  left: 47%;
+  top: 50%;
+  color: #42b983;
+  font-size: 20px;
+  z-index: 2;
+}
+.dot{
+  position: fixed;
+}
 </style>
