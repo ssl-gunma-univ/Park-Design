@@ -539,6 +539,7 @@ export default {
       var b = Math.floor(this.getRandom(0, 255))
       return `rgb(${r},${g},${b})`
     },
+
     // Animation ends here
     getUsername (index) {
       if (index !== undefined) {
